@@ -71,7 +71,6 @@
         const togglePassword = document.getElementById('togglePassword');
         const guestLink = document.querySelector('a[href="frontpage.html"]');        
         
-        // Password toggle - Added initial text so the icon shows up
         togglePassword.textContent = '👁️'; 
         togglePassword.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -84,9 +83,7 @@
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Check if inputs are filled
             if (usernameInput.value && passwordInput.value) {
-                // Change 'customer.html' to 'frontpage.html'
                 window.location.href = 'frontpage.html'; 
             } else {
                 alert("Please enter your credentials.");
@@ -95,14 +92,13 @@
 
         // When clicking Guest
         guestLink.addEventListener('click', function() {
-        // This tells frontpage.html "Hey, I'm a guest!"
             sessionStorage.setItem('userRole', 'guest');
         }); 
-        // Update your existing Form submission to set role as 'user'
+        
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             if (usernameInput.value && passwordInput.value) {
-                sessionStorage.setItem('userRole', 'user'); // Set role here
+                sessionStorage.setItem('userRole', 'user'); 
                 window.location.href = 'frontpage.html'; 
             } else {
                 alert("Please enter your credentials.");
