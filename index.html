@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarVault</title>
+    <link rel="stylesheet" href="styles.css">
+       
+</head>
+<body>
+    <header class="header">
+        <div class="brand-group">
+            <h2>CarVault</h2>
+            <div class="logo-container">
+                <img src="logo.png" alt="Logo">
+            </div>
+        </div>
+    </header>
+
+    <div class="image-container">
+        <img src="5864.png" alt="Cars Display">
+    </div>
+
+    <div class="login-container">   
+        <form id="loginForm">
+        <h2>Sign In</h2>
+
+            <!-- USERNAME/EMAIL -->
+            <div class="first-input input-field-group">
+                <input type="text" id="username" name="username" required> 
+                <label for="username">Username / Email</label>
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="first-input input-field-group password-container">
+                <input type="password" id="password" name="password" required>
+                <label for="password">Password</label>
+                <span class="toggle-password" id="togglePassword"></span>
+            </div>
+
+            <!-- REMEMBER ME & FORGOT PASSWORD -->
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember">
+                    <span>Remember me</span>
+                </label>
+                <a href="forgot-password.html" class="forgot-link">Forgot Password?</a>
+            </div>
+
+            <!-- SUBMIT BUTTON -->
+            <div class="container">
+                <button type="submit">Login</button>                   
+            </div>
+
+            <!-- REGISTER LINK -->
+           <div class="register" id="register-link">
+                <p>Don't have an account? <a href="register.html">Register here</a></p>
+                <p style="text-align: center;">or</p>
+                <p>Enter as <a href="frontpage.html">Guest</a></p>
+            </div>
+        </form>
+    </div>
+
+
+   <script>
+        const loginForm = document.getElementById('loginForm');
+        const inputGroups = document.querySelectorAll('.input-field-group');
+        const registerSection = document.getElementById('register-link');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const guestLink = document.querySelector('a[href="frontpage.html"]');        
+        
+        // Password toggle - Added initial text so the icon shows up
+        togglePassword.textContent = '👁️'; 
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+            passwordInput.focus();
+        });
+
+        // Form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Check if inputs are filled
+            if (usernameInput.value && passwordInput.value) {
+                // Change 'customer.html' to 'frontpage.html'
+                window.location.href = 'frontpage.html'; 
+            } else {
+                alert("Please enter your credentials.");
+            }
+        });
+
+        // When clicking Guest
+        guestLink.addEventListener('click', function() {
+        // This tells frontpage.html "Hey, I'm a guest!"
+            sessionStorage.setItem('userRole', 'guest');
+        }); 
+        // Update your existing Form submission to set role as 'user'
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (usernameInput.value && passwordInput.value) {
+                sessionStorage.setItem('userRole', 'user'); // Set role here
+                window.location.href = 'frontpage.html'; 
+            } else {
+                alert("Please enter your credentials.");
+            }
+        });
+</script>
+</body>
+</html>

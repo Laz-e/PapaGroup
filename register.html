@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Register-specific overrides */
+        .register-page .login-container {
+            padding: 35px 30px;
+            width: 350px;
+        }
+
+        .register-page .login-container h2 {
+            font-size: 1.6rem;
+            margin-bottom: 18px;
+        }
+
+        .register-page .first-input {
+            margin-bottom: 16px;
+        }
+
+        .register-page .first-input input {
+            height: 42px;
+            font-size: 0.88rem;
+            padding: 10px 5px 5px 5px;
+        }
+
+        .register-page .first-input label {
+            font-size: 0.85rem;
+        }
+
+        .register-page .password-container {
+            margin-bottom: 16px;
+        }
+
+        .register-page button {
+            height: 48px;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .register-page .toggle-password {
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 900px) {
+            .register-page body {
+                padding-top: 120px;
+            }
+
+            .register-page .login-container {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .register-page .login-container {
+                padding: 25px 18px;
+                width: 100%;
+            }
+
+            .register-page .login-container h2 {
+                font-size: 1.4rem;
+                margin-bottom: 12px;
+            }
+
+            .register-page .first-input {
+                margin-bottom: 13px;
+            }
+
+            .register-page .first-input input {
+                height: 38px;
+            }
+
+            .register-page button {
+                height: 44px;
+            }
+        }
+    </style>
+</head>
+<body class="register-page">
+       <header class="header">
+        <div class="brand-group">
+            <h2>CarVault</h2>
+            <div class="logo-container">
+                <img src="logo.png" alt="Logo">
+            </div>
+        </div>
+    </header>
+    <div class="image-container">
+        <img src="5864.png" alt="Cars Display">
+    </div>
+
+    <div class="login-container">   
+        <form id="registerForm">
+        <h2>Create your Account</h2>
+        
+            <div class="first-input input-field-group">
+                <input type="text" id="username" name="username" required>
+                <label for="username">Username</label>
+            </div>
+
+             <div class="first-input input-field-group">
+                <input type="text" id="fname" name="fname" required>
+                <label for="fname">First Name</label>
+            </div>
+
+             <div class="first-input input-field-group">
+                <input type="text" id="lname" name="lname" required>
+                <label for="lname">Last Name</label>
+            </div>
+
+              <div class="first-input input-field-group">
+                <input type="email" id="email" name="email" required>
+                <label for="email">Email</label>
+            </div>
+
+            <div class="first-input input-field-group password-container">
+                <input type="password" id="password" name="password" required>
+                <label for="password">Password</label>
+                <span class="toggle-password" id="togglePassword">👁️</span>
+            </div>
+
+        <button type="submit">Create Account</button>
+        </form>
+    </div>
+
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        // Password toggle
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Form submission - redirect to index.html
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Redirect to index.html after account creation
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
