@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sell Your Car Here</title>
+
+  <!-- Optional: Google font for a modern look -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+  <div class="nav-inner">
+    <div class="brand">
+      <img src="images/carmudi-logo.png" alt="CarVault" class="brand-logo">
+    </div>
+
+    <nav class="main-nav" aria-label="Main navigation">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="seller.html" class="active">Sell Your Car</a></li>
+        <li><a href="contact.html">Contact/Help</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="inspection.html" class="btn-cta">Seller Inspection</a>
+      <button class="mobile-toggle" aria-label="Open menu">☰</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- HERO: centered title (search bar removed) -->
+<section class="hero hero-centered">
+  <div class="hero-inner container">
+    <div class="hero-center">
+      <h1 class="hero-title">Sell Your Car Here</h1>
+      <p class="hero-sub">Start by providing your car's details</p>
+    </div>
+  </div>
+</section>
+
+  <!-- MAIN: benefits (left) + brands (right) -->
+  <main class="main">
+    <div class="container-grid">
+      <!-- LEFT: Benefits -->
+      <aside class="benefits">
+        <h2>Benefits of Selling Your Car with Us</h2>
+
+        <ul class="benefit-list">
+          <li class="benefit-item">
+            <div class="icon icon-blue"><img src="gain.jpg" alt=""></div>
+            <div class="benefit-text">
+              <h3>Reach More Buyers</h3>
+              <p>Reach far more buyers with Carmudi’s wide exposure.</p>
+            </div>
+          </li>
+
+          <li class="benefit-item">
+            <div class="icon icon-green"><img src="verified.jpg" alt=""></div>
+            <div class="benefit-text">
+              <h3>Verified & Trusted</h3>
+              <p>All leads are verified via OTP for safe, real connections.</p>
+            </div>
+          </li>
+
+          <li class="benefit-item">
+            <div class="icon icon-orange"><img src="free.jpg" alt=""></div>
+            <div class="benefit-text">
+              <h3>Hassle-Free Selling</h3>
+              <p>Post your car in minutes & manage leads stress-free.</p>
+            </div>
+          </li>
+
+          <li class="benefit-item">
+            <div class="icon icon-pink"><img src="car.jpg" alt=""></div>
+            <div class="benefit-text">
+              <h3>Best Car Price</h3>
+              <p>Instant online valuations – no guesswork, no haggling.</p>
+            </div>
+          </li>
+        </ul>
+      </aside>
+
+     <!-- BRANDS (replace existing .brands-grid content) -->
+<section class="brands">
+  <div class="brands-grid">
+    <a class="brand-card" href="brand/toyota.html" aria-label="Toyota">
+      <img src="toyota.jpg" alt="Toyota logo">
+    </a>
+
+    <a class="brand-card" href="brand/mitsubishi.html" aria-label="Mitsubishi">
+      <img src="mitsubishi.jpg" alt="Mitsubishi logo">
+    </a>
+
+    <a class="brand-card" href="brand/byd.html" aria-label="BYD">
+      <img src="BYD.jpg" alt="BYD logo">
+    </a>
+
+    <a class="brand-card" href="brand/suzuki.html" aria-label="Suzuki">
+      <img src="susuki.jpg" alt="Suzuki logo">
+    </a>
+
+    <a class="brand-card" href="brand/bmw.html" aria-label="BMW">
+      <img src="BWM.jpg" alt="BMW logo">
+    </a>
+
+    <a class="brand-card" href="brand/honda.html" aria-label="Honda">
+      <img src="honda.jpg" alt="Honda logo">
+    </a>
+
+    <a class="brand-card" href="brand/kia.html" aria-label="Kia">
+      <img src="kia.jpg" alt="Kia logo">
+    </a>
+
+    <a class="brand-card" href="brand/nissan.html" aria-label="Nissan">
+      <img src="nissan.jpg" alt="Nissan logo">
+    </a>
+
+    <a class="brand-card" href="brand/mg.html" aria-label="MG">
+      <img src="mg.jpg" alt="MG logo">
+    </a>
+
+    <a class="brand-card" href="brand/ford.html" aria-label="Ford">
+      <img src="ford.jpg" alt="Ford logo">
+    </a>
+  </div>
+</section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© Carmudi by CarMo SEA</small>
+    </div>
+  </footer>
+  <script>
+  document.querySelectorAll('.brand-card img').forEach(img=>{
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', ()=> {
+      let modal = document.getElementById('logoModal');
+      modal.querySelector('img').src = img.src;
+      modal.classList.add('open');
+    });
+  });
+  document.getElementById('logoModal').addEventListener('click', (e)=>{
+    if(e.target.id === 'logoModal' || e.target.classList.contains('close')){
+      e.currentTarget.classList.remove('open');
+    }
+  });
+</script>
+
+<!-- Add this modal element near the end of body -->
+<div id="logoModal" class="logo-modal" role="dialog" aria-hidden="true">
+  <span class="close" aria-label="Close">&times;</span>
+  <img src="" alt="Logo preview">
+</div>
+<script>
+  const mobileToggle = document.querySelector('.mobile-toggle');
+  const mainNav = document.querySelector('.main-nav');
+  mobileToggle?.addEventListener('click', ()=> {
+    mainNav.classList.toggle('open');
+  });
+  // close nav when clicking outside on mobile
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav') && mainNav.classList.contains('open')) {
+      mainNav.classList.remove('open');
+    }
+  });
+</script>
+
+</body>
+</html>
