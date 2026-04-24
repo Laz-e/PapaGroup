@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarVault | Welcome</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* =========================================
+        1. GLOBAL & BODY STYLES
+        ========================================= */
+        body {
+            display: block; 
+            margin: 0;
+            padding-top: 100px; 
+            background: linear-gradient(135deg, #5e616e 0%, #736186 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* =========================================
+        2. HEADER & NAVIGATION
+        ========================================= */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0px 70px; 
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Branding & Logo */
+        .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+        }
+
+        .logo-link {
+            text-decoration: none; 
+            color: inherit;         
+            display: inline-block;
+        }
+
+        .header h2 {
+            margin: 0;
+            padding: 0;
+            display: inline-block;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header h2 a {
+            background: inherit;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-left: -15px; 
+        }
+
+        .logo-container img {
+            padding-top: 5px; 
+            height: 120px; 
+            width: auto;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        /* Nav Links */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .header-nav a {
+            text-decoration: none;
+            color: #1D2951;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .header-nav a:hover {
+            color: #a855f7; 
+        }
+
+        .logout-link {
+            opacity: 0.6;
+        }
+
+        /* =========================================
+        3. HERO SECTION
+        ========================================= */
+        .hero-section {
+            text-align: center;
+            color: white;
+            padding: 50px 20px;
+            animation: fadeIn 1.5s ease-in;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #FFF8DC 100%);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-section p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            margin-top: 15px; 
+            background: linear-gradient(135deg, #e2e8f0 0%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-section p strong {
+            color: #f06529; 
+            -webkit-text-fill-color: #9b8278; 
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* =========================================
+        4. SEARCH CONTAINER
+        ========================================= */
+        .search-container {
+            max-width: 600px;
+            max-height: 10px;
+            margin: -20px auto 120px auto; 
+            padding: 20px 20px 0 20px;
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUpFade 1s ease-out forwards;
+            animation-delay: 0.8s; 
+        }
+
+        .search-box {
+            display: flex;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 8px 10px 20px 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .search-box:focus-within {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.95); 
+            font-weight: 300;
+            -webkit-text-fill-color: white; 
+        }
+
+        .search-btn {
+            border: none;
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            padding: 0 30px;
+            border-radius: 40px;
+            max-height: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-1px);
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+        }
+
+        .search-btn:active {
+            transform: scale(0.95);
+            filter: brightness(1.2);
+        }
+
+        .search-box:hover .search-btn i {
+            animation: iconPulse 1s infinite alternate;
+        }
+
+        /* =========================================
+        5. PORSCHE CONTAINER
+        ========================================= */
+        .porsche-container {
+            position: relative;
+            perspective: 1000px;
+            margin-top: -30px; 
+            z-index: 1; 
+        }
+
+        .porsche-container img {
+            width: 100%; 
+            max-width: 600px; 
+            display: block; 
+            margin: 1px auto;
+            transition: transform 0.5s ease, filter 0.5s ease; 
+            animation: driveIn 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            animation-delay: 0.5s;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+        }
+
+        /* =========================================
+        6. ABOUT US SECTION
+        ========================================= */
+        .about-section {
+            padding: 120px 20px;
+            margin: 100px 0;
+            background: rgba(255, 255, 255, 0.08); 
+            color: white;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .about-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+            border-radius: 60px;
+        }
+
+        .about-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center; 
+            gap: 60px; 
+            text-align: left; 
+        }
+
+        .about-text {
+            flex: 1; 
+        }
+
+        .about-section h2 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            line-height: 1.1;
+            color: #ffffff;
+        }
+
+        .about-section h2 span {
+            background: linear-gradient(135deg, #e2e8f0 0%, #FFF8DC 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .about-section p {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: #cbd5e1;
+            margin-bottom: 25px;
+            max-width: 500px; 
+        }
+
+        .about-visual {
+            flex: 1; 
+        }
+
+        .about-visual img {
+            width: 120%;
+            height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+            padding-right: 70px;
+        }
+
+        /* =========================================
+        7. FOOTER SECTION
+        ========================================= */
+        .footer-section {
+            /* Wrapper styling if needed */
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-content p {
+            margin: 0;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            color: #cbd5e1;
+        }
+
+        .contact-icons {
+            display: flex;
+            gap: 30px;
+            margin-top: 10px;
+        }
+
+        .contact-item {
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .contact-item i {
+            font-size: 1.5rem;
+            color: #FFF8DC; 
+        }
+
+        .contact-item:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+            color: #a855f7; 
+        }
+
+        .footer-bottom {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+
+        /* =========================================
+        8. MEDIA QUERIES
+        ========================================= */
+        @media (max-width: 768px) {
+            .about-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .about-section p {
+                margin: 0 auto 25px auto;
+            }
+            .about-visual img {
+                padding-right: 0;
+                width: 100%;
+            }
+        }
+
+        /* =========================================
+        9. ANIMATIONS
+        ========================================= */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUpFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes iconPulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+
+        @keyframes driveIn {
+            from {
+                opacity: 0;
+                transform: translateX(-100px); 
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0); 
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+</style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="brand-group">
+                <h2><a href="frontpage.html" class="logo-link">CarVault</a></h2>    
+                <div class="logo-container">
+                <img src="logo.png" alt="Logo">
+            </div>
+        </div>
+
+        <nav class="header-nav">
+            <a href="buy.html">Buy Cars</a>
+            <a href="seller.html">Sell My Car</a>
+            <a href="#about-us">About Us</a>
+            <a href="login.html" class="logout-link">Logout</a>
+        </nav>
+    </header>
+
+    <main class="hero-section">
+        <h1>The key is in your hands.</h1>
+        <p>Search, secure, or sell—all in one <strong>vault.</strong></p>
+    </main>
+
+    <div class="search-container">
+    <form action="buy.html" method="GET" class="search-box">
+        <input type="text" name="query" placeholder="Search by model, make, or year..." aria-label="Search cars">
+        <button type="submit" class="search-btn">
+            <i class="fas fa-search"></i>
+            Search
+        </button>
+    </form>
+    </div>
+
+    <div class="porsche-container">
+        <img src="porsche.png" alt="Porsche Image" style="width: 100%; max-width: 600px; display: block; margin: 1px auto;">
+    </div>
+
+    <section id="about-us" class="about-section">
+    <div class="about-content">
+        <div class="about-text" id="about.html">
+            <h2>About <span>CarVault</span></h2>
+            <p>
+                Established in 2026 by a team of five automotive and tech visionaries, 
+                <strong>CarVault</strong> was born from a single mission: to revolutionize 
+                the digital car-buying journey.
+            </p>
+            <p>
+                We have built a comprehensive ecosystem where you can <strong>search</strong> 
+                through an elite inventory, <strong>buy</strong> with total financial 
+                confidence, and <strong>sell</strong> your vehicle through a streamlined, 
+                secure process. 
+            </p>
+        </div>
+        <div class="about-visual">
+            <img src="6513.png" alt="Featured Car">
+        </div>
+    </div>
+    </section>
+
+    <div class="footer-section">
+    <footer class="footer-content">
+        <p>Connect with the <strong>CarVault</strong> team for personalized assistance.</p>
+        
+        <div class="contact-icons">
+            <a href="mailto:support@carvault.com" class="contact-item" title="Email Us">
+                <i class="fas fa-envelope"></i>
+                <span>support@carvault.com</span>
+            </a>
+
+            <a href="tel:+1234567890" class="contact-item" title="Call Us">
+                <i class="fas fa-phone-alt"></i>
+                <span>+1 (234) 567-890</span>
+            </a>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 CarVault Inc. All rights reserved.</p>
+        </div>
+    </footer>
+    </div>
+
+   <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        // 1. Guest/User Role Logic
+        const userRole = sessionStorage.getItem('userRole');
+        const logoutLink = document.querySelector('.logout-link');
+
+        if (userRole === 'guest') {
+            logoutLink.textContent = 'Sign In';
+            logoutLink.href = 'index.html'; 
+            logoutLink.style.opacity = '1'; 
+            logoutLink.style.pointerEvents = 'auto'; 
+            logoutLink.title = "Click to Sign In";
+        }
+
+        // 2. Slow Smooth Scroll Logic
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    const targetPosition = targetElement.offsetTop - 80; // Offset for fixed header
+                    const startPosition = window.pageYOffset;
+                    const distance = targetPosition - startPosition;
+                    let startTime = null;
+                    const duration = 2000; // 2 seconds
+
+                    function animation(currentTime) {
+                        if (startTime === null) startTime = currentTime;
+                        const timeElapsed = currentTime - startTime;
+                        const run = ease(timeElapsed, startPosition, distance, duration);
+                        window.scrollTo(0, run);
+                        if (timeElapsed < duration) requestAnimationFrame(animation);
+                    }
+
+                    function ease(t, b, c, d) {
+                        t /= d / 2;
+                        if (t < 1) return c / 2 * t * t + b;
+                        t--;
+                        return -c / 2 * (t * (t - 2) - 1) + b;
+                    }
+                    requestAnimationFrame(animation);
+                }
+            });
+        });
+
+        // 3. Intersection Observer (Fade-in logic)
+        // This is now correctly INSIDE the DOMContentLoaded block
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const aboutSection = document.querySelector('.about-section');
+        if (aboutSection) {
+            observer.observe(aboutSection);
+        }
+    });
+</script>
+</body>
+</html>

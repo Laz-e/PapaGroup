@@ -1,0 +1,447 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ===== HEADER STYLES ===== */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    height: 80px;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
+.brand-group {
+    display: flex;
+    align-items: center;
+    gap: 1px; /* Keeps them close together */
+}
+
+.header h2 {
+    font-size: 2rem;
+    background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    letter-spacing: 3px;
+    margin: 0;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    text-transform: uppercase;
+}
+
+/* LOGO CONTAINER*/
+.logo-container {
+    display: flex;
+    align-items: center;
+    /* Pulls logo closer to the text to eliminate the gap */
+    margin-left: -15px; 
+}
+
+.logo-container img {
+    height: 110px; /* Sized to look premium while centered */
+    width: auto;
+    display: block;
+    padding-top: 5px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* ===== BODY STYLES ===== */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    min-height: 100vh;
+background: radial-gradient(circle at center, #7e6b91 0%, #3e3f47 100%);    min-height: 100vh;
+    padding: 0 5vw;
+    padding-top: 100px;
+    margin-top: 0;
+    overflow-x: hidden;
+}
+
+/* ===== IMAGE CONTAINER ===== */
+.image-container {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: slideInLeft 0.8s ease-out;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.3));
+    transition: filter 0.3s ease;
+    animation: float 4s ease-in-out infinite;
+}
+
+/* ===== LOGIN CONTAINER ===== */
+.login-container {
+    width: 380px;
+    padding: 50px 40px;
+    padding-bottom: 30px;
+    border-radius: 25px;
+    background: linear-gradient(135deg, rgba(248, 250, 252, 0.99) 0%, rgba(225, 239, 251, 0.98) 100%);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.4s ease;
+    animation: slideInRight 0.8s ease-out;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 
+                inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.login-container:hover {
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transform: translateY(-5px);
+}
+
+/* ===== FORM HEADING ===== */
+.login-container h2 {
+    font-size: 1.8rem;
+    color: #1D2951;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* ===== FORM STYLES ===== */
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 5px;
+}
+
+/* ===== INPUT FIELD GROUP ===== */
+.input-field-group {
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.first-input {
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.first-input label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    font-size: 0.9rem;
+    color: #1D2951;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.first-input input:focus ~ label,
+.first-input input:valid ~ label {
+    top: -8px;
+    font-size: 0.8rem;
+    color: #a855f7;
+    font-weight: 600;
+}
+
+.first-input input {
+    width: 100%;
+    height: 50px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    color: #1D2951;
+    padding: 15px 5px 5px 5px;
+    border-bottom: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.first-input input:hover {
+    border-bottom-color: #a855f7;
+}
+
+.first-input input:focus {
+    border-bottom-color: #a855f7;
+    background: rgba(235, 118, 118, 0.05);
+    border-radius: 5px 5px 0 0;
+}
+
+.first-input::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #1D2951, transparent);
+    transition: 0.4s ease;
+    transform: translateX(-50%);
+}
+
+.first-input:focus-within::after {
+    width: 100%;
+}
+
+/* ===== PASSWORD CONTAINER ===== */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-container input {
+    padding-right: 40px !important;
+}
+
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    bottom: 12px; /* Aligns it better with the text baseline */
+    cursor: pointer;
+    font-size: 1.2rem;
+    z-index: 10; /* Ensure it stays above the decorative ::after line */
+}
+
+/* ===== REMEMBER & FORGOT PASSWORD STYLES ===== */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -10px; /* Pulls it closer to the input field */
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #1D2951;
+    font-weight: 500;
+}
+
+.remember-me input {
+    cursor: pointer;
+    accent-color: #a855f7; /* Matches your brand purple */
+    width: 16px;
+    height: 16px;
+}
+
+.forgot-link {
+    color: #1D2951;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.forgot-link:hover {
+    color: #1D2951;
+    text-decoration: underline;
+}
+
+/* ===== BUTTON STYLES ===== */
+button {
+    width: 100%;
+    height: 55px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    outline: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: white;
+    font-weight: 700;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: left 0.4s ease;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+   background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+    box-shadow: 0 15px 40px rgba(79, 70, 229, 0.4);
+}
+
+button:active {
+    transform: translateY(-1px);
+}
+
+/* ===== REGISTER SECTION ===== */
+.register {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+    margin-top: 15px; /* Reduced from 25px */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* This creates perfect, even spacing without <br> tags */
+}
+
+.register p {
+    margin: 0;
+}
+
+.register p:nth-child(2) {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.register p a {
+    color: #1D2951;
+    text-decoration: none;
+    font-weight: 700;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.register p a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #1D2951;
+    transition: width 0.3s ease;
+}
+
+.register p a:hover {
+    color: #1D2951;
+}
+
+.register p a:hover::after {
+    width: 100%;
+}
+
+/* ===== KEYFRAME ANIMATIONS ===== */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1200px) {
+    body {
+        gap: 2rem;
+    }
+
+    .image-container {
+        width: 40%;
+    }
+}
+
+@media (max-width: 900px) {
+    body {
+        flex-direction: column;
+        justify-content: center;
+        gap: 2rem;
+        padding: 20px;
+        padding-top: 120px;
+    }
+
+    .image-container {
+        width: 70%;
+        max-width: 400px;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 380px;
+    }
+
+    .header {
+        padding: 15px;
+    }
+
+    .header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 15px;
+        padding-top: 100px;
+    }
+
+    .image-container {
+        width: 90%;
+    }
+
+    .login-container {
+        width: 100%;
+        padding: 30px 25px;
+    }
+
+    .login-container h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    button {
+        height: 50px;
+        font-size: 1rem;
+    }
+
+    .header h2 {
+        font-size: 1.3rem;
+    }
+}
