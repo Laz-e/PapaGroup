@@ -497,7 +497,6 @@
 
    <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-        // 1. Guest/User Role Logic
         const userRole = sessionStorage.getItem('userRole');
         const logoutLink = document.querySelector('.logout-link');
 
@@ -509,7 +508,6 @@
             logoutLink.title = "Click to Sign In";
         }
 
-        // 2. Slow Smooth Scroll Logic
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -542,8 +540,6 @@
             });
         });
 
-        // 3. Intersection Observer (Fade-in logic)
-        // This is now correctly INSIDE the DOMContentLoaded block
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {

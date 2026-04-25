@@ -64,45 +64,43 @@
 
    <script>
         const loginForm = document.getElementById('loginForm');
-        const inputGroups = document.querySelectorAll('.input-field-group');
-        const registerSection = document.getElementById('register-link');
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         const togglePassword = document.getElementById('togglePassword');
-        const guestLink = document.querySelector('a[href="frontpage.html"]');        
-        
+        const guestLink = document.querySelector('a[href="frontpage.html"]');
+
         togglePassword.textContent = '👁️'; 
         togglePassword.addEventListener('click', function () {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.textContent = type === 'password' ? '👁️' : '🙈';
-            passwordInput.focus();
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.textContent = type === 'password' ? '👁️' : '🙈';
         });
 
-        // Form submission
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            if (usernameInput.value && passwordInput.value) {
-                window.location.href = 'frontpage.html'; 
+            const enteredUser = usernameInput.value;
+            const enteredPass = passwordInput.value;
+
+            const storedData = localStorage.getItem(enteredUser);
+
+            if (storedData) {
+                const user = JSON.parse(storedData);
+
+                // Check if password matches
+                if (user.password === enteredPass) {
+                    sessionStorage.setItem('userRole', 'user');
+                    window.location.href = 'frontpage.html';
+                } else {
+                    alert("Incorrect password. Please try again.");
+                }
             } else {
-                alert("Please enter your credentials.");
+                alert("Username not found. Please register first.");
             }
         });
 
-        // When clicking Guest
         guestLink.addEventListener('click', function() {
             sessionStorage.setItem('userRole', 'guest');
-        }); 
-        
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (usernameInput.value && passwordInput.value) {
-                sessionStorage.setItem('userRole', 'user'); 
-                window.location.href = 'frontpage.html'; 
-            } else {
-                alert("Please enter your credentials.");
-            }
         });
 </script>
 </body>
