@@ -420,7 +420,7 @@
         <div class="brand-group">
                 <h2><a href="frontpage.html" class="logo-link">CarVault</a></h2>    
                 <div class="logo-container">
-                <img src="logo.png" alt="Logo">
+                <img src="pictures/logo.png" alt="Logo">
             </div>
         </div>
 
@@ -448,7 +448,7 @@
     </div>
 
     <div class="porsche-container">
-        <img src="porsche.png" alt="Porsche Image" style="width: 100%; max-width: 600px; display: block; margin: 1px auto;">
+        <img src="pictures/porsche.png" alt="Porsche Image" style="width: 100%; max-width: 600px; display: block; margin: 1px auto;">
     </div>
 
     <section id="about-us" class="about-section">
@@ -468,7 +468,7 @@
             </p>
         </div>
         <div class="about-visual">
-            <img src="6513.png" alt="Featured Car">
+            <img src="pictures/6513.png" alt="Featured Car">
         </div>
     </div>
     </section>
@@ -497,7 +497,6 @@
 
    <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-        // 1. Guest/User Role Logic
         const userRole = sessionStorage.getItem('userRole');
         const logoutLink = document.querySelector('.logout-link');
 
@@ -509,7 +508,6 @@
             logoutLink.title = "Click to Sign In";
         }
 
-        // 2. Slow Smooth Scroll Logic
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -542,8 +540,6 @@
             });
         });
 
-        // 3. Intersection Observer (Fade-in logic)
-        // This is now correctly INSIDE the DOMContentLoaded block
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
