@@ -1,4 +1,4 @@
-/* style.css - designed to match the screenshot */
+
 :root{
   --nav-blue:#002f5f;
   --cta-orange:#ff6600;
@@ -22,40 +22,98 @@ body{
 }
 
 /* NAV */
-.nav{
-  background:var(--nav-blue);
-  color:#fff;
-  box-shadow:0 1px 0 rgba(0,0,0,0.06);
+/* ===== HEADER STYLES ===== */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    height: 80px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 0 40px;
 }
-.nav-inner{
-  max-width:var(--max-width);
-  margin:0 auto;
-  padding:12px 20px;
-  display:flex;
-  align-items:center;
-  gap:16px;
+
+/* Brand group (logo + text) */
+.brand-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
-/* nav core */
-.nav-inner { display:flex; align-items:center; gap:16px; max-width:1200px; margin:0 auto; padding:12px 20px; }
-.brand-logo { height:28px; }
 
-/* main nav */
-.main-nav ul { list-style:none; display:flex; gap:18px; margin:0; padding:0; align-items:center; }
-.main-nav a { color:#fff; text-decoration:none; font-weight:600; font-size:15px; padding:6px 8px; border-radius:6px; }
-.main-nav a.active { background: rgba(255,255,255,0.08); }
-
-/* CTA */
-.btn-cta { background:var(--cta-orange,#ff6600); color:#fff; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:700; box-shadow:0 6px 18px rgba(255,102,0,0.12); }
-
-/* mobile */
-.mobile-toggle { display:none; background:transparent; border:none; color:#fff; font-size:20px; cursor:pointer; }
-@media (max-width:760px){
-  .main-nav { display:none; position:absolute; inset:56px 16px auto 16px; background:var(--nav-blue,#002f5f); border-radius:10px; padding:12px; box-shadow:0 12px 36px rgba(2,6,23,0.18); }
-  .main-nav.open { display:block; }
-  .main-nav ul { flex-direction:column; gap:8px; }
-  .mobile-toggle { display:inline-flex; }
-  .nav-actions .btn-cta { display:none; } /* optional: show CTA inside mobile menu instead */
+.logo-container img {
+    height: 110px; /* Sized to look premium while centered */
+    width: auto;
+    display: block;
+    padding-top: 5px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
+
+.header h2 {
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin: 0;
+    font-family: 'Georgia', serif;
+    text-transform: uppercase;
+}
+
+/* Navigation menu */
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #1D2951;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #a855f7;
+    transition: width 0.3s ease;
+}
+
+.main-nav a:hover {
+    color: #a855f7;
+}
+
+.main-nav a:hover::after {
+    width: 100%;
+}
+
+/* ===== BODY BACKGROUND ===== */
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at center, #7e6b91 0%, #3e3f47 100%);
+    color: #111827;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding-top: 100px; /* para hindi matakpan ng fixed header */
+}
+
 
 .brand-logo{height:28px}
 .main-nav ul{
@@ -66,13 +124,20 @@ body{
   padding:0;
   align-items:center;
 }
-.main-nav a{
-  color:#fff;
+.main-nav a {
+  color:#1D2951;          /* dark blue text */
   text-decoration:none;
-  font-weight:500;
-  font-size:14px;
-  opacity:0.95;
+  font-weight:600;
+  font-size:15px;
+  padding:6px 8px;
+  border-radius:6px;
+  transition: color 0.3s ease;
 }
+
+.main-nav a:hover {
+  color:#a855f7;          /* accent purple on hover */
+}
+
 .nav-actions{margin-left:auto;display:flex;gap:10px;align-items:center}
 .btn-cta{
   background:var(--cta-orange);
@@ -140,12 +205,14 @@ body{
 }
 
 /* Subtitle */
-.hero-sub{
+.hero-sub {
   margin: 0;
-  color: var(--muted);
+  color: #ffffff;       /* puti kung dark background */
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6); /* dagdag shadow para mas readable */
 }
+
 
 /* Decorative underline / accent bar under title (subtle) */
 .hero-center::after{
@@ -170,9 +237,9 @@ body{
 }
 
 /* HERO */
-.hero{
-  background:linear-gradient(90deg,#e9f5fc 0%, #ffffff 100%);
-  padding:36px 0 28px;
+.hero {
+  background: transparent;
+  padding: 36px 0 28px;
 }
 .hero-inner{
   max-width:var(--max-width);
