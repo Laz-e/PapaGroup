@@ -321,17 +321,62 @@ body {
 }
 
 /* =========================================
-   7. FOOTER
+   7. FOOTER SECTION (Frontpage Style)
    ========================================= */
-.site-footer {
-    padding: 18px 0;
+.footer-section {
+    padding: 60px 0 20px; /* Increased padding to match frontpage depth */
     background: transparent;
-    color: var(--muted);
-    text-align: center;
 }
 
-.site-footer small {
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-content p {
+    margin: 0;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    color: #cbd5e1;
+}
+
+.contact-icons {
+    display: flex;
+    gap: 30px;
+    margin-top: 10px;
+}
+
+.contact-item {
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
     opacity: 0.8;
+}
+
+.contact-item i {
+    font-size: 1.5rem;
+    color: #FFF8DC; /* Specific cream color from frontpage */
+}
+
+.contact-item:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+    color: #a855f7; /* Purple hover match */
+}
+
+.footer-bottom {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    font-size: 0.8rem;
+    opacity: 0.5;
 }
 
 /* =========================================
