@@ -219,6 +219,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const brandInput = document.getElementById('displayBrand');
     const modalTitle = document.getElementById('modalTitle');
     const closeBtn = document.querySelector('.close-sell');
+    const userRole = sessionStorage.getItem('userRole');
+    const logoutLink = document.querySelector('.logout-link');
+
+        if (userRole === 'guest') {
+            logoutLink.textContent = 'Sign In';
+            logoutLink.href = 'index.html'; 
+            logoutLink.style.opacity = '1'; 
+            logoutLink.style.pointerEvents = 'auto'; 
+            logoutLink.title = "Click to Sign In";
+        }
+
+        logoutLink.addEventListener('click', function(e) {
+                if (userRole !== 'guest') {
+                    e.preventDefault(); 
+                    
+                    // Clear session data
+                    sessionStorage.removeItem('userRole');
+                    sessionStorage.removeItem('activeUser');
+                    
+                    // Redirect back to login page
+                    window.location.href = 'index.html';
+                }
+            });
 
     // Handle Brand Clicks
     brandCards.forEach(card => {
@@ -244,30 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
         sellModal.classList.remove('open');
     });
 });
-
-      const userRole = sessionStorage.getItem('userRole');
-      const logoutLink = document.querySelector('.logout-link');
-
-        if (userRole === 'guest') {
-            logoutLink.textContent = 'Sign In';
-            logoutLink.href = 'index.html'; 
-            logoutLink.style.opacity = '1'; 
-            logoutLink.style.pointerEvents = 'auto'; 
-            logoutLink.title = "Click to Sign In";
-        }
-
-        logoutLink.addEventListener('click', function(e) {
-                if (userRole !== 'guest') {
-                    e.preventDefault(); 
-                    
-                    // Clear session data
-                    sessionStorage.removeItem('userRole');
-                    sessionStorage.removeItem('activeUser');
-                    
-                    // Redirect back to login page
-                    window.location.href = 'index.html';
-                }
-            });
 
 </script>
 

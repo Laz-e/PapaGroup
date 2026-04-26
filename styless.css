@@ -59,11 +59,11 @@ body {
     gap: 1px;
 }
 .brand-card {
-    cursor: pointer; /* Makes it feel like a button */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}.brand-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.brand-card:hover {
+    transform: scale(1.05); /* Subtle pop effect */
 }
 .header h2 {
     font-size: 1.8rem;
