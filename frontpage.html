@@ -239,6 +239,7 @@
             animation: driveIn 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
             animation-delay: 0.5s;
             filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+            height: auto
         }
 
         /* =========================================
@@ -425,9 +426,9 @@
         </div>
 
         <nav class="header-nav">
+            <a href="frontpage.html">Home</a>
             <a href="buy.html">Buy Cars</a>
             <a href="seller.html">Sell My Car</a>
-            <a href="#about-us">About Us</a>
             <a href="login.html" class="logout-link">Logout</a>
         </nav>
     </header>
@@ -507,6 +508,19 @@
             logoutLink.style.pointerEvents = 'auto'; 
             logoutLink.title = "Click to Sign In";
         }
+
+        logoutLink.addEventListener('click', function(e) {
+                if (userRole !== 'guest') {
+                    e.preventDefault(); 
+                    
+                    // Clear session data
+                    sessionStorage.removeItem('userRole');
+                    sessionStorage.removeItem('activeUser');
+                    
+                    // Redirect back to login page
+                    window.location.href = 'index.html';
+                }
+            });
 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {

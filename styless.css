@@ -107,7 +107,7 @@ body{
 body {
     margin: 0;
     min-height: 100vh;
-    background: radial-gradient(circle at center, #7e6b91 0%, #3e3f47 100%);
+    background: linear-gradient(135deg, #5e616e 0%, #736186 100%);
     color: #111827;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

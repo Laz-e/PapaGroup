@@ -79,23 +79,37 @@
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const enteredUser = usernameInput.value;
-            const enteredPass = passwordInput.value;
+            const submitBtn = this.querySelector('button');
+            const originalText = submitBtn.textContent;
 
-            const storedData = localStorage.getItem(enteredUser);
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging In...';
 
-            if (storedData) {
-                const user = JSON.parse(storedData);
+            setTimeout(() => {
+                const enteredUser = usernameInput.value;
+                const enteredPass = passwordInput.value;
+                const storedData = localStorage.getItem(enteredUser);
 
-                // Check if password matches
-                if (user.password === enteredPass) {
-                    sessionStorage.setItem('userRole', 'user');
-                    window.location.href = 'frontpage.html';
+                if (storedData) {
+                    const user = JSON.parse(storedData);
+                    if (user.password === enteredPass) {
+                        // Save user details for session persistence
+                        sessionStorage.setItem('userRole', 'user');
+                        sessionStorage.setItem('activeUser', user.username); 
+                        window.location.href = 'frontpage.html';
+                    } else {
+                        alert("Incorrect password.");
+                        resetButton();
+                    }
                 } else {
-                    alert("Incorrect password. Please try again.");
+                    alert("Username not found.");
+                    resetButton();
                 }
-            } else {
-                alert("Username not found. Please register first.");
+            }, 1000);
+
+            function resetButton() {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
             }
         });
 
