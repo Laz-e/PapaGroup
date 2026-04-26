@@ -58,7 +58,13 @@ body {
     align-items: center;
     gap: 1px;
 }
-
+.brand-card {
+    cursor: pointer; /* Makes it feel like a button */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}.brand-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 .header h2 {
     font-size: 1.8rem;
     background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
@@ -319,6 +325,8 @@ body {
     color: inherit;
     box-shadow: 0 6px 18px rgba(2,6,23,0.06);
     transition: transform .22s ease, box-shadow .22s ease;
+    cursor: pointer; /* Makes it feel like a button */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .brand-card img {
@@ -332,7 +340,10 @@ body {
     pointer-events: none; /* Prevents click issues on image within link */
 }
 
-.brand-card:hover,
+.brand-card:hover{
+transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 .brand-card:focus {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 14px 36px rgba(2,6,23,0.14);
@@ -433,7 +444,51 @@ body {
     font-size: 28px;
     cursor: pointer;
 }
+/* Selling Modal Styles */
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
 
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #1D2951; }
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+.form-row { display: flex; gap: 15px; }
+.form-row .form-group { flex: 1; }
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #a855f7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover { background: #8b5cf6; }
+
+.close-sell {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+}
 /* =========================================
    9. RESPONSIVE QUERIES
    ========================================= */

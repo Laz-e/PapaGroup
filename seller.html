@@ -86,79 +86,75 @@
      <!-- BRANDS (replace existing .brands-grid content) -->
 <section class="brands">
   <div class="brands-grid">
-    <a class="brand-card" href="Toyota Models.html" aria-label="Toyota">
+    <div class="brand-card" data-brand="Toyota">
       <img src="pictures/toyota.jpg" alt="Toyota logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="Mitsubishi Models.html" aria-label="Mitsubishi">
+    <div class="brand-card" data-brand="Mitsubishi">
       <img src="pictures/mitsubishi.jpg" alt="Mitsubishi logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="Mazda.html" aria-label="Mazda">
+    <div class="brand-card" data-brand="Mazda">
       <img src="pictures/mazda.png" alt="Mazda logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="landrover.html" aria-label="Land Rover">
+    <div class="brand-card" data-brand="Land Rover">
       <img src="pictures/landrover.jpg" alt="Land Rover logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="lexus.html" aria-label="Lexus">
+    <div class="brand-card" data-brand="Lexus">
       <img src="pictures/lexus.jpeg" alt="Lexus logo">
-    </a>
+    </div>
     
-    <a class="brand-card" href="chevrolet.html" aria-label="Chevrolet">
+    <div class="brand-card" data-brand="Chevrolet">
       <img src="pictures/chevrolet.jpg" alt="Chevrolet logo">
-    </a>
+    </div>
     
-    <a class="brand-card" href="BYD Models.html" aria-label="BYD">
+    <div class="brand-card" data-brand="BYD">
       <img src="pictures/BYD.jpg" alt="BYD logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="Suzuki Models.html" aria-label="Suzuki">
+    <div class="brand-card" data-brand="Suzuki">
       <img src="pictures/susuki.jpg" alt="Suzuki logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="BWM Models.html" aria-label="BMW">
+    <div class="brand-card" data-brand="BMW">
       <img src="pictures/BWM.jpg" alt="BMW logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="Honda Models.html" aria-label="Honda">
+    <div class="brand-card" data-brand="Honda">
       <img src="pictures/honda.jpg" alt="Honda logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="KIA Models.html" aria-label="Kia">
+    <div class="brand-card" data-brand="Kia">
       <img src="pictures/kia.jpg" alt="Kia logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="NIssan Models.html" aria-label="Nissan">
+    <div class="brand-card" data-brand="Nissan">
       <img src="pictures/nissan.jpg" alt="Nissan logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="MG Models.html" aria-label="MG">
+    <div class="brand-card" data-brand="MG">
       <img src="pictures/mg.jpg" alt="MG logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="Ford Models.html" aria-label="Ford">
+    <div class="brand-card" data-brand="Ford">
       <img src="pictures/ford.jpg" alt="Ford logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="Hyundai Models.html" aria-label="Hyundai">
+    <div class="brand-card" data-brand="Hyundai">
       <img src="pictures/hyundai.jpeg" alt="Hyundai logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="Lexus Models.html" aria-label="Lexus">
-      <img src="pictures/lexus.jpeg" alt="Lexus logo">
-    </a>
-
-    <a class="brand-card" href="Isuzu Models.html" aria-label="Isuzu">
+    <div class="brand-card" data-brand="Isuzu">
       <img src="pictures/isuzu.png" alt="Isuzu logo">
-    </a>
+    </div>
 
-    <a class="brand-card" href="Subaru Models.html" aria-label="Subaru">
+    <div class="brand-card" data-brand="Subaru">
       <img src="pictures/subaru.jpeg" alt="Subaru logo">
-    </a>
+    </div>
+  </div>
 </section>
-
     </div>
   </main>
 
@@ -184,59 +180,95 @@
   </footer>
 </div>
 
-  <script>
-  document.querySelectorAll('.brand-card img').forEach(img=>{
-    img.style.cursor = 'zoom-in';
-    img.addEventListener('click', ()=> {
-      let modal = document.getElementById('logoModal');
-      modal.querySelector('img').src = img.src;
-      modal.classList.add('open');
-    });
-  });
-  document.getElementById('logoModal').addEventListener('click', (e)=>{
-    if(e.target.id === 'logoModal' || e.target.classList.contains('close')){
-      e.currentTarget.classList.remove('open');
-    }
-  });
-  
-</script>
-
-<!-- Add this modal element near the end of body -->
-<div id="logoModal" class="logo-modal" role="dialog" aria-hidden="true">
-  <span class="close" aria-label="Close">&times;</span>
-  <img src="" alt="Logo preview">
+  <div id="sellModal" class="logo-modal">
+  <div class="modal-content">
+    <span class="close-sell">&times;</span>
+    <h2 id="modalTitle" style="color: var(--nav-blue);">Sell Your Vehicle</h2>
+    <form id="vehicleDetailsForm">
+      <div class="form-group">
+        <label>Brand</label>
+        <input type="text" id="displayBrand" readonly style="background: #eee;">
+      </div>
+      <div class="form-group">
+        <label>Model</label>
+        <input type="text" id="carModel" placeholder="e.g. Vios, Hilux" required>
+      </div>
+      <div class="form-group">
+        <label>Variant</label>
+        <input type="text" id="carVariant" placeholder="e.g. G-Variant" required>
+      </div>
+      <div class="form-row" style="display: flex; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+          <label>Year</label>
+          <input type="number" id="carYear" min="1990" max="2026" required>
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label>Mileage (km)</label>
+          <input type="number" id="carMileage" required>
+        </div>
+      </div>
+      <button type="submit" class="submit-btn" style="width: 100%; padding: 12px; background: var(--cta-orange); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px;">Post for Sale</button>
+    </form>
+  </div>
 </div>
-<script>
-  const mobileToggle = document.querySelector('.mobile-toggle');
-  const mainNav = document.querySelector('.main-nav');
-  mobileToggle?.addEventListener('click', ()=> {
-    mainNav.classList.toggle('open');
-  });
-  // close nav when clicking outside on mobile
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.nav') && mainNav.classList.contains('open')) {
-      mainNav.classList.remove('open');
-    }
-  });
-  document.addEventListener('DOMContentLoaded', () => {
-    const userRole = sessionStorage.getItem('userRole');
-    const logoutBtn = document.querySelector('.logout-link');
 
-    if (logoutBtn) {
-        if (userRole === 'guest') {
-            logoutBtn.textContent = 'Sign In';
-            logoutBtn.href = 'index.html'; 
-            logoutBtn.style.opacity = '1';
-        } else {
-            logoutBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                sessionStorage.removeItem('userRole');
-                sessionStorage.removeItem('activeUser');
-                window.location.href = 'index.html';
-            });
-        }
-    }
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const brandCards = document.querySelectorAll('.brand-card');
+    const sellModal = document.getElementById('sellModal');
+    const brandInput = document.getElementById('displayBrand');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeBtn = document.querySelector('.close-sell');
+
+    // Handle Brand Clicks
+    brandCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const brandName = card.getAttribute('data-brand');
+            brandInput.value = brandName;
+            modalTitle.textContent = `Sell Your ${brandName}`;
+            sellModal.classList.add('open');
+        });
+    });
+
+    // Close Modal Logic
+    closeBtn.addEventListener('click', () => sellModal.classList.remove('open'));
+    
+    window.addEventListener('click', (e) => {
+        if (e.target === sellModal) sellModal.classList.remove('open');
+    });
+
+    // Form Submit
+    document.getElementById('vehicleDetailsForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert("Vehicle listed successfully in CarVault!");
+        sellModal.classList.remove('open');
+    });
 });
+
+      const userRole = sessionStorage.getItem('userRole');
+      const logoutLink = document.querySelector('.logout-link');
+
+        if (userRole === 'guest') {
+            logoutLink.textContent = 'Sign In';
+            logoutLink.href = 'index.html'; 
+            logoutLink.style.opacity = '1'; 
+            logoutLink.style.pointerEvents = 'auto'; 
+            logoutLink.title = "Click to Sign In";
+        }
+
+        logoutLink.addEventListener('click', function(e) {
+                if (userRole !== 'guest') {
+                    e.preventDefault(); 
+                    
+                    // Clear session data
+                    sessionStorage.removeItem('userRole');
+                    sessionStorage.removeItem('activeUser');
+                    
+                    // Redirect back to login page
+                    window.location.href = 'index.html';
+                }
+            });
+
 </script>
 
 </body>
