@@ -25,8 +25,7 @@
       <li><a href="frontpage.html">Home</a></li>
       <li><a href="buy.html">Buy Cars</a></li>
       <li><a href="seller.html">Sell My Car</a></li>
-      <li><a href="logout.html">Logout</a></li>
-    </ul>
+      <li><a href="logout.html" class="logout-link">Logout</a></li>    </ul>
   </nav>
 </header>
 
@@ -95,6 +94,22 @@
       <img src="pictures/mitsubishi.jpg" alt="Mitsubishi logo">
     </a>
 
+    <a class="brand-card" href="Mazda.html" aria-label="Mazda">
+      <img src="pictures/mazda.png" alt="Mazda logo">
+    </a>
+
+    <a class="brand-card" href="landrover.html" aria-label="Land Rover">
+      <img src="pictures/landrover.jpg" alt="Land Rover logo">
+    </a>
+
+    <a class="brand-card" href="lexus.html" aria-label="Lexus">
+      <img src="pictures/lexus.jpeg" alt="Lexus logo">
+    </a>
+    
+    <a class="brand-card" href="chevrolet.html" aria-label="Chevrolet">
+      <img src="pictures/chevrolet.jpg" alt="Chevrolet logo">
+    </a>
+    
     <a class="brand-card" href="BYD Models.html" aria-label="BYD">
       <img src="pictures/BYD.jpg" alt="BYD logo">
     </a>
@@ -126,7 +141,22 @@
     <a class="brand-card" href="Ford Models.html" aria-label="Ford">
       <img src="pictures/ford.jpg" alt="Ford logo">
     </a>
-  </div>
+
+    <a class="brand-card" href="Hyundai Models.html" aria-label="Hyundai">
+      <img src="pictures/hyundai.jpeg" alt="Hyundai logo">
+    </a>
+
+    <a class="brand-card" href="Lexus Models.html" aria-label="Lexus">
+      <img src="pictures/lexus.jpeg" alt="Lexus logo">
+    </a>
+
+    <a class="brand-card" href="Isuzu Models.html" aria-label="Isuzu">
+      <img src="pictures/isuzu.png" alt="Isuzu logo">
+    </a>
+
+    <a class="brand-card" href="Subaru Models.html" aria-label="Subaru">
+      <img src="pictures/subaru.jpeg" alt="Subaru logo">
+    </a>
 </section>
 
     </div>
@@ -168,6 +198,7 @@
       e.currentTarget.classList.remove('open');
     }
   });
+  
 </script>
 
 <!-- Add this modal element near the end of body -->
@@ -187,6 +218,25 @@
       mainNav.classList.remove('open');
     }
   });
+  document.addEventListener('DOMContentLoaded', () => {
+    const userRole = sessionStorage.getItem('userRole');
+    const logoutBtn = document.querySelector('.logout-link');
+
+    if (logoutBtn) {
+        if (userRole === 'guest') {
+            logoutBtn.textContent = 'Sign In';
+            logoutBtn.href = 'index.html'; 
+            logoutBtn.style.opacity = '1';
+        } else {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                sessionStorage.removeItem('userRole');
+                sessionStorage.removeItem('activeUser');
+                window.location.href = 'index.html';
+            });
+        }
+    }
+});
 </script>
 
 </body>

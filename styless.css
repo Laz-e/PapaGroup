@@ -276,15 +276,37 @@ body {
    ========================================= */
 .brands {
     background: transparent;
+    max-height: 500px; /* Adjust this value based on your preference */
+    overflow-y: auto;  /* Enables vertical scrolling */
+    padding-right: 10px; /* Space for the scrollbar */
+    
+    /* Smooth scrolling behavior */
+    scroll-behavior: smooth;
+    
+}
+
+.brands::-webkit-scrollbar {
+    width: 8px;
+}
+
+.brands::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.brands::-webkit-scrollbar-thumb {
+    border-radius: 10px;
 }
 
 .brands-grid {
     display: grid;
     grid-template-columns: repeat(var(--brands-columns-desktop), 1fr);
     gap: var(--brand-gap);
-    align-items: center;
-}
+    align-items: start;
+        padding-top: 10px;
 
+    padding-bottom: 20px; /* Space at the bottom of the list */
+}
 .brand-card {
     background: var(--card-bg, #fff);
     border-radius: 12px;
@@ -301,7 +323,7 @@ body {
 
 .brand-card img {
     max-width: 100%;
-    max-height: 100%;
+    max-height: 80%;
     width: auto;
     height: auto;
     object-fit: contain;
