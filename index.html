@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CarVault</title>
     <link rel="stylesheet" href="styles.css">
-       
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header class="header">
@@ -88,12 +88,21 @@
             setTimeout(() => {
                 const enteredUser = usernameInput.value;
                 const enteredPass = passwordInput.value;
+
+                // MANAGER LOGIN
+                if (enteredUser === "admin" && enteredPass === "manager123") {
+                    sessionStorage.setItem('userRole', 'manager');
+                    sessionStorage.setItem('activeUser', 'Manager');
+                    window.location.href = 'manager.html'; // Redirect to manager dashboard
+                    return;
+                }
+
+                // USERS
                 const storedData = localStorage.getItem(enteredUser);
 
                 if (storedData) {
                     const user = JSON.parse(storedData);
                     if (user.password === enteredPass) {
-                        // Save user details for session persistence
                         sessionStorage.setItem('userRole', 'user');
                         sessionStorage.setItem('activeUser', user.username); 
                         window.location.href = 'frontpage.html';
@@ -113,8 +122,9 @@
             }
         });
 
-        guestLink.addEventListener('click', function() {
+        guestLink.addEventListener('click', function(e) {
             sessionStorage.setItem('userRole', 'guest');
+            sessionStorage.setItem('activeUser', 'Guest'); // Good for "Welcome, Guest" headers
         });
 </script>
 </body>
