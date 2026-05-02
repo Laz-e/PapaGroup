@@ -233,75 +233,75 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-   container.innerHTML = listings.map((car, index) => `
-    <div class="listing-card">
-        ${car.image ? `<img src="${car.image}" alt="Car Photo" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:15px;">` : ''}
-        
-        <h3>${car.year} ${car.brand} ${car.model}</h3>
-        <p><strong>Price:</strong> ₱${Number(car.price).toLocaleString()}</p>
-        <p><strong>Variant:</strong> ${car.variant}</p>
-        <p><strong>Mileage:</strong> ${car.mileage} km</p>
-        <p><strong>Transmission:</strong> ${car.transmission}</p>
-        <hr>
-        <div class="seller-info">
-            <p><strong>Seller:</strong> ${car.seller}</p>
-            <p><strong>Contact:</strong> ${car.phone}</p>
-            <p><strong>Email:</strong> ${car.email}</p>
-
-        <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 15px;">
-            <button onclick="approveListing(${index})" class="approve-btn" style="flex: 2;">Approve</button>
-            <button onclick="editListing(${index})" style="flex: 1; padding: 10px; background: #ffc107; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Edit</button>
-            <button onclick="deleteListing(${index})" style="flex: 1; padding: 10px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Delete</button>
-        </div>
-`).join('');
-});
+        container.innerHTML = listings.map((car, index) => `
+            <div class="listing-card" style="${car.status === 'approved' ? 'border: 2px solid #28a745; opacity: 0.9;' : ''}">
+                ${car.image ? `<img src="${car.image}" alt="Car Photo" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:15px;">` : ''}
+                
+                <h3>${car.year} ${car.brand} ${car.model}</h3>
+                <p><strong>Status:</strong> ${car.status === 'approved' ? '<span style="color: #28a745;">APPROVED</span>' : '<span style="color: #ffc107;">PENDING</span>'}</p>
+                <p><strong>Price:</strong> ₱${Number(car.price).toLocaleString()}</p>
+                <hr>
+                
+                <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 15px;">
+                    ${car.status !== 'approved' ? 
+                        `<button onclick="approveListing(${index})" class="approve-btn" style="flex: 2;">Approve</button>` : 
+                        `<button disabled style="flex: 2; background: #6c757d; cursor: not-allowed;">Already Approved</button>`
+                    }
+                    <button onclick="editListing(${index})" style="flex: 1; padding: 10px; background: #ffc107; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Edit</button>
+                    <button onclick="deleteListing(${index})" style="flex: 1; padding: 10px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Delete</button>
+                </div>
+            </div>
+        `).join('');
+        });
 
         function approveListing(index) {
             let listings = JSON.parse(localStorage.getItem('carListings') || '[]');
             
-            const approvedCar = listings[index];
+            listings[index].status = 'approved';
             
             let approvedListings = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+            approvedListings.push(listings[index]);
             
-            approvedListings.push(approvedCar);
+            localStorage.setItem('carListings', JSON.stringify(listings));
             localStorage.setItem('approvedCars', JSON.stringify(approvedListings));
             
-            listings.splice(index, 1); 
-            localStorage.setItem('carListings', JSON.stringify(listings));
-            
-            alert("Listing Approved! It is now visible to buyers.");
+            alert("Listing Approved! It remains in your panel and is now visible to buyers.");
             location.reload(); 
         }
+
         function deleteListing(index) {
-            if (confirm("Are you sure you want to delete this pending listing?")) {
+            if (confirm("Are you sure you want to delete this listing? It will also be removed from the Buyer's view.")) {
                 let listings = JSON.parse(localStorage.getItem('carListings') || '[]');
                 
-                // Remove the specific item using its index
+                // 1. Remove from the master inventory
                 listings.splice(index, 1); 
-                
-                // Save the updated list back to localStorage
                 localStorage.setItem('carListings', JSON.stringify(listings));
                 
-                alert("Listing deleted successfully.");
+                const approvedOnly = listings.filter(car => car.status === 'approved');
+                localStorage.setItem('approvedCars', JSON.stringify(approvedOnly));
+                
+                alert("Listing deleted successfully from both Manager and Buyer panels.");
                 location.reload(); 
             }
         }
+
         function editListing(index) {
             let listings = JSON.parse(localStorage.getItem('carListings') || '[]');
             let car = listings[index];
 
-            // Simple prompt-based editing for key fields
             const newPrice = prompt("Enter new price:", car.price);
             const newMileage = prompt("Enter new mileage:", car.mileage);
 
             if (newPrice !== null && newMileage !== null) {
-                // Update the object data
                 listings[index].price = newPrice;
                 listings[index].mileage = newMileage;
 
-                // Save and refresh
                 localStorage.setItem('carListings', JSON.stringify(listings));
-                alert("Listing updated successfully!");
+
+                const approvedOnly = listings.filter(c => c.status === 'approved');
+                localStorage.setItem('approvedCars', JSON.stringify(approvedOnly));
+
+                alert("Listing updated successfully on all panels!");
                 location.reload();
             }
         }
