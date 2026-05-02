@@ -342,7 +342,9 @@
                     transmission: document.getElementById('carTransmission').value,
                     variant: document.getElementById('carVariant').value,
                     mileage: document.getElementById('carMileage').value,
+                    price: document.getElementById('carPrice').value,
                     image: reader.result, // This is the Base64 string of the image
+                    status: 'pending',
                     dateListed: new Date().toLocaleDateString()
                 };
                 sellModal.classList.remove('open');
