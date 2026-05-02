@@ -238,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ${car.image ? `<img src="${car.image}" alt="Car Photo" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:15px;">` : ''}
         
         <h3>${car.year} ${car.brand} ${car.model}</h3>
+        <p><strong>Price:</strong> ₱${Number(car.price).toLocaleString()}</p>
         <p><strong>Variant:</strong> ${car.variant}</p>
         <p><strong>Mileage:</strong> ${car.mileage} km</p>
         <p><strong>Transmission:</strong> ${car.transmission}</p>
@@ -246,9 +247,12 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Seller:</strong> ${car.seller}</p>
             <p><strong>Contact:</strong> ${car.phone}</p>
             <p><strong>Email:</strong> ${car.email}</p>
+
+        <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 15px;">
+            <button onclick="approveListing(${index})" class="approve-btn" style="flex: 2;">Approve</button>
+            <button onclick="editListing(${index})" style="flex: 1; padding: 10px; background: #ffc107; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Edit</button>
+            <button onclick="deleteListing(${index})" style="flex: 1; padding: 10px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Delete</button>
         </div>
-        <button onclick="approveListing(${index})" class="approve-btn">Approve Listing</button>
-    </div>
 `).join('');
 });
 
@@ -267,6 +271,39 @@ document.addEventListener('DOMContentLoaded', () => {
             
             alert("Listing Approved! It is now visible to buyers.");
             location.reload(); 
+        }
+        function deleteListing(index) {
+            if (confirm("Are you sure you want to delete this pending listing?")) {
+                let listings = JSON.parse(localStorage.getItem('carListings') || '[]');
+                
+                // Remove the specific item using its index
+                listings.splice(index, 1); 
+                
+                // Save the updated list back to localStorage
+                localStorage.setItem('carListings', JSON.stringify(listings));
+                
+                alert("Listing deleted successfully.");
+                location.reload(); 
+            }
+        }
+        function editListing(index) {
+            let listings = JSON.parse(localStorage.getItem('carListings') || '[]');
+            let car = listings[index];
+
+            // Simple prompt-based editing for key fields
+            const newPrice = prompt("Enter new price:", car.price);
+            const newMileage = prompt("Enter new mileage:", car.mileage);
+
+            if (newPrice !== null && newMileage !== null) {
+                // Update the object data
+                listings[index].price = newPrice;
+                listings[index].mileage = newMileage;
+
+                // Save and refresh
+                localStorage.setItem('carListings', JSON.stringify(listings));
+                alert("Listing updated successfully!");
+                location.reload();
+            }
         }
 </script>
 </body>
