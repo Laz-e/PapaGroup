@@ -152,7 +152,14 @@
             border-top: 1px solid #eee;
             margin: 15px 0;
         }
-
+        .listing-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover; 
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #0f0f0f;
+        }
         /* Action Buttons */
         .approve-btn {
             margin-top: 15px;
@@ -226,21 +233,23 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    container.innerHTML = listings.map((car, index) => `
-        <div class="listing-card">
-            <h3>${car.year} ${car.brand} ${car.model}</h3>
-            <p><strong>Variant:</strong> ${car.variant}</p>
-            <p><strong>Mileage:</strong> ${car.mileage} km</p>
-            <p><strong>Transmission:</strong> ${car.transmission}</p>
-            <hr>
-            <div class="seller-info">
-                <p><strong>Seller:</strong> ${car.seller}</p>
-                <p><strong>Contact:</strong> ${car.phone}</p>
-                <p><strong>Email:</strong> ${car.email}</p>
-            </div>
-            <button onclick="approveListing(${index})" class="approve-btn">Approve Listing</button>
+   container.innerHTML = listings.map((car, index) => `
+    <div class="listing-card">
+        ${car.image ? `<img src="${car.image}" alt="Car Photo" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:15px;">` : ''}
+        
+        <h3>${car.year} ${car.brand} ${car.model}</h3>
+        <p><strong>Variant:</strong> ${car.variant}</p>
+        <p><strong>Mileage:</strong> ${car.mileage} km</p>
+        <p><strong>Transmission:</strong> ${car.transmission}</p>
+        <hr>
+        <div class="seller-info">
+            <p><strong>Seller:</strong> ${car.seller}</p>
+            <p><strong>Contact:</strong> ${car.phone}</p>
+            <p><strong>Email:</strong> ${car.email}</p>
         </div>
-    `).join('');
+        <button onclick="approveListing(${index})" class="approve-btn">Approve Listing</button>
+    </div>
+`).join('');
 });
 
 function approveListing(index) {
