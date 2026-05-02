@@ -226,6 +226,12 @@
           <input type="number" id="carMileage" placeholder="e.g. 15000" required>
       </div>
 
+      <div class="form-group">
+    <label>Upload Car Photo</label>
+    <input type="file" id="carImage" accept="image/*" required
+           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+    </div>
+
       <button type="submit" class="submit-btn" style="width: 100%; padding: 12px; background: var(--cta-orange); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px;">Post for Sale</button>
     </form>
   </div>
@@ -309,17 +315,30 @@
 
         document.getElementById('vehicleDetailsForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            tempVehicleData = {
-                brand: document.getElementById('displayBrand').value,
-                year: document.getElementById('carYear').value,
-                model: document.getElementById('carModel').value,
-                transmission: document.getElementById('carTransmission').value,
-                variant: document.getElementById('carVariant').value,
-                mileage: document.getElementById('carMileage').value,
-                dateListed: new Date().toLocaleDateString()
+            
+            const imageFile = document.getElementById('carImage').files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+                tempVehicleData = {
+                    brand: document.getElementById('displayBrand').value,
+                    year: document.getElementById('carYear').value,
+                    model: document.getElementById('carModel').value,
+                    transmission: document.getElementById('carTransmission').value,
+                    variant: document.getElementById('carVariant').value,
+                    mileage: document.getElementById('carMileage').value,
+                    image: reader.result, // This is the Base64 string of the image
+                    dateListed: new Date().toLocaleDateString()
+                };
+                sellModal.classList.remove('open');
+                sellerModal.classList.add('open');
             };
-            sellModal.classList.remove('open');
-            sellerModal.classList.add('open');
+
+            if (imageFile) {
+                reader.readAsDataURL(imageFile); // Starts the conversion process
+            } else {
+                alert("Please select a photo.");
+            }
         });
 
         document.getElementById('sellerDetailsForm').addEventListener('submit', function(e) {
