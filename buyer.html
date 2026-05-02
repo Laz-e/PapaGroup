@@ -134,7 +134,30 @@
         document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('buyerListingContainer');
     const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+    const userRole = sessionStorage.getItem('userRole');
+    const logoutLink = document.querySelector('.logout-link');
 
+        if (userRole === 'guest') {
+            logoutLink.textContent = 'Sign In';
+            logoutLink.href = 'index.html'; 
+            logoutLink.style.opacity = '1'; 
+            logoutLink.style.pointerEvents = 'auto'; 
+            logoutLink.title = "Click to Sign In";
+        }
+
+        logoutLink.addEventListener('click', function(e) {
+                if (userRole !== 'guest') {
+                    e.preventDefault(); 
+                    
+                    // Clear session data
+                    sessionStorage.removeItem('userRole');
+                    sessionStorage.removeItem('activeUser');
+                    
+                    // Redirect back to login page
+                    window.location.href = 'index.html';
+                }
+            });
+            
     if (approvedCars.length === 0) {
         container.innerHTML = `<p style="color: white; font-style: italic;">No cars available for sale right now.</p>`;
         return;
@@ -144,6 +167,8 @@
         <div class="listing-card" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             ${car.image ? `<img src="${car.image}" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:15px;">` : ''}
             <h3 style="color: #1D2951; margin: 0;">${car.year} ${car.brand} ${car.model}</h3>
+            <p style="font-size: 1.2rem; color: #28a745; font-weight: bold; margin: 10px 0;">
+            ₱${Number(car.price).toLocaleString()}
             <p><strong>Variant:</strong> ${car.variant}</p>
             <p><strong>Mileage:</strong> ${car.mileage} km</p>
             <p><strong>Transmission:</strong> ${car.transmission}</p>
