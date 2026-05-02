@@ -252,12 +252,22 @@ document.addEventListener('DOMContentLoaded', () => {
 `).join('');
 });
 
-function approveListing(index) {
-    let listings = JSON.parse(localStorage.getItem('carListings') || '[]');
-    listings.splice(index, 1); 
-    localStorage.setItem('carListings', JSON.stringify(listings));
-    location.reload(); 
-}
+        function approveListing(index) {
+            let listings = JSON.parse(localStorage.getItem('carListings') || '[]');
+            
+            const approvedCar = listings[index];
+            
+            let approvedListings = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+            
+            approvedListings.push(approvedCar);
+            localStorage.setItem('approvedCars', JSON.stringify(approvedListings));
+            
+            listings.splice(index, 1); 
+            localStorage.setItem('carListings', JSON.stringify(listings));
+            
+            alert("Listing Approved! It is now visible to buyers.");
+            location.reload(); 
+        }
 </script>
 </body>
 </html>   
