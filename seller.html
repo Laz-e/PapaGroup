@@ -198,7 +198,9 @@
 
       <div class="form-group">
           <label>Year</label>
-          <input type="number" id="carYear" min="1990" max="2026" placeholder="2024" required>
+          <select id="carYear" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+              <option value="" disabled selected>Select Year</option>
+          </select>
       </div>
 
       <div class="form-group">
@@ -274,13 +276,14 @@
         const brandCards = document.querySelectorAll('.brand-card');
         const sellModal = document.getElementById('sellModal');
         const sellerModal = document.getElementById('sellerInfoModal');
+        const yearSelect = document.getElementById('carYear');
         const brandInput = document.getElementById('displayBrand');
         const modalTitle = document.getElementById('modalTitle');
         const closeBtn = document.querySelector('.close-sell');
         const closeSellerBtn = document.querySelector('.close-seller');
         const userRole = sessionStorage.getItem('userRole');
         const logoutLink = document.querySelector('.logout-link');
-
+        
         let tempVehicleData = {}; 
 
         // GUEST / LOGOUT LOGIC (Added back)
@@ -301,12 +304,68 @@
             }
         });
 
+        function populateYearDropdown(brand) {
+        yearSelect.innerHTML = '<option value="" disabled selected>Select Year</option>';
+        
+        let startYear = 1990; 
+        const endYear = 2026;
+
+        if (brand === 'Ford') {
+            startYear = 2006;
+        } else if (brand === 'Honda') {
+            startYear = 2006;
+        } else if (brand === 'Hyundai') {
+            startYear = 2006;
+        } else if (brand === 'Isuzu') {
+            startYear = 2007;
+        } else if (brand === 'Mitsubishi') {
+            startYear = 2006;
+        } else if (brand === 'Nissan') {
+            startYear = 2006;
+        } else if (brand === 'Toyota') {
+            startYear = 2006;
+        } else if (brand === 'Audi') {
+            startYear = 2006;
+        } else if (brand === 'BMW') {
+            startYear = 2006;
+        } else if (brand === 'BYD') {
+            startYear = 2011;
+        } else if (brand === 'Chevrolet') {
+            startYear = 2006;
+        } else if (brand === 'Land Rover') {
+            startYear = 2010;
+        }  else if (brand === 'Lexus') {
+            startYear = 2009;
+        } else if (brand === 'Mazda') {
+            startYear = 2007;
+        } else if (brand === 'MG') {
+            startYear = 2011;
+        } else if (brand === 'Suzuki') {
+            startYear = 2006;
+        } else if (brand === 'Kia') {
+            startYear = 2015;
+        } else if (brand === 'Subaru') {
+            startYear = 2008;
+        }
+
+        for (let i = endYear; i >= startYear; i--) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            yearSelect.appendChild(option);
+            }
+        }
+
         brandCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const brandName = card.getAttribute('data-brand');
-                brandInput.value = brandName;
-                modalTitle.textContent = `Sell Your ${brandName}`;
-                sellModal.classList.add('open');
+        card.addEventListener('click', () => {
+            const brandName = card.getAttribute('data-brand');
+            brandInput.value = brandName;
+            
+            // Populate the year menu based on the selected brand
+            populateYearDropdown(brandName);
+            
+            modalTitle.textContent = `Sell Your ${brandName}`;
+            sellModal.classList.add('open');
             });
         });
 
