@@ -36,7 +36,6 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        /* Branding & Logo */
         .brand-group {
             display: flex;
             align-items: center;
@@ -82,7 +81,6 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
 
-        /* Nav Links */
         .header-nav {
             display: flex;
             align-items: center;
@@ -97,25 +95,168 @@
             transition: color 0.3s ease;
         }
 
-        .header-nav a:hover {
-            color: #a855f7; 
+        .header-nav a:hover { color: #a855f7; }
+
+        .logout-link { opacity: 0.6; }
+
+        /* =========================================
+        3. MAIN CONTENT & GRID
+        ========================================= */
+        .main-content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
         }
 
-        .logout-link {
-            opacity: 0.6;
+        .page-title {
+            color: white;
+            margin-bottom: 30px;
         }
 
+        .listing-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .empty-msg {
+            color: white;
+            font-style: italic;
+        }
+
+        /* =========================================
+        4. LISTING CARDS
+        ========================================= */
+        .listing-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .listing-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #0f0f0f;
+        }
+
+        .listing-title {
+            color: #1D2951;
+            margin: 0;
+        }
+
+        .listing-price {
+            font-size: 1.2rem;
+            color: #28a745;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .contact-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .contact-btn:hover { 
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            transform: scale(1.02); 
+        }
+        /* =========================================
+        5. MODAL STYLES
+        ========================================= */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .close-icon {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-header {
+            color: #1D2951;
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .modal-body {
+            color: #333;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .seller-info-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .seller-info-title {
+            margin: 0;
+            color: #1D2951;
+            font-weight: bold;
+        }
+
+        .purchase-btn {
+            margin-top: 25px;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .purchase-btn:hover { 
+            transform: scale(1.02); 
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+}
+        .purchase-btn:active { 
+            transform: scale(0.98); 
+        }
     </style>
 </head>
 <body>
-   <header class="header">
+    <header class="header">
         <div class="brand-group">
-                <h2><a href="frontpage.html" class="logo-link">CarVault</a></h2>    
-                <div class="logo-container">
+            <h2><a href="frontpage.html" class="logo-link">CarVault</a></h2>    
+            <div class="logo-container">
                 <img src="pictures/logo.png" alt="Logo">
             </div>
         </div>
-
         <nav class="header-nav">
             <a href="frontpage.html">Home</a>
             <a href="buyer.html">Buy Cars</a>
@@ -124,61 +265,111 @@
         </nav>
     </header>
 
-    <main style="padding: 20px; max-width: 1200px; margin: auto;">
-        <h1 style="color: white; margin-bottom: 30px;">Available Cars</h1>
-        <div id="buyerListingContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
-        </div>
+    <main class="main-content">
+        <h1 class="page-title">Available Cars</h1>
+        <div id="buyerListingContainer" class="listing-container"></div>
     </main>
+
+    <div id="carModal" class="modal-overlay">
+        <div class="modal-content">
+            <span onclick="closeModal()" class="close-icon">&times;</span>
+            <h2 class="modal-header">Vehicle Details</h2>
+            <div id="modalSpecs" class="modal-body">
+            </div>
+            <button onclick="handlePurchase()" class="purchase-btn">
+                Secure This Vehicle
+            </button>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('buyerListingContainer');
-    const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
-    const userRole = sessionStorage.getItem('userRole');
-    const logoutLink = document.querySelector('.logout-link');
+            const container = document.getElementById('buyerListingContainer');
+            const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+            const userRole = sessionStorage.getItem('userRole');
+            const logoutLink = document.querySelector('.logout-link');
+            let currentCarIndex = null;
 
-        if (userRole === 'guest') {
-            logoutLink.textContent = 'Sign In';
-            logoutLink.href = 'index.html'; 
-            logoutLink.style.opacity = '1'; 
-            logoutLink.style.pointerEvents = 'auto'; 
-            logoutLink.title = "Click to Sign In";
-        }
+            if (userRole === 'guest') {
+                logoutLink.textContent = 'Sign In';
+                logoutLink.href = 'index.html'; 
+                logoutLink.style.opacity = '1'; 
+                logoutLink.style.pointerEvents = 'auto'; 
+                logoutLink.title = "Click to Sign In";
+            }
 
-        logoutLink.addEventListener('click', function(e) {
+            logoutLink.addEventListener('click', function(e) {
                 if (userRole !== 'guest') {
                     e.preventDefault(); 
-                    
-                    // Clear session data
                     sessionStorage.removeItem('userRole');
                     sessionStorage.removeItem('activeUser');
-                    
-                    // Redirect back to login page
                     window.location.href = 'index.html';
                 }
             });
-            
-    if (approvedCars.length === 0) {
-        container.innerHTML = `<p style="color: white; font-style: italic;">No cars available for sale right now.</p>`;
-        return;
-    }
+                
+            if (approvedCars.length === 0) {
+                container.innerHTML = `<p class="empty-msg">No cars available for sale right now.</p>`;
+                return;
+            }
 
-    container.innerHTML = approvedCars.map(car => `
-        <div class="listing-card" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            ${car.image ? `<img src="${car.image}" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:15px;">` : ''}
-            <h3 style="color: #1D2951; margin: 0;">${car.year} ${car.brand} ${car.model}</h3>
-            <p style="font-size: 1.2rem; color: #28a745; font-weight: bold; margin: 10px 0;">
-            ₱${Number(car.price).toLocaleString()}
-            <p><strong>Variant:</strong> ${car.variant}</p>
-            <p><strong>Mileage:</strong> ${car.mileage} km</p>
-            <p><strong>Transmission:</strong> ${car.transmission}</p>
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
-            <button style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
-                Contact Seller
-            </button>
-        </div>
-    `).join('');
-});
+            container.innerHTML = approvedCars.map((car, index) => `
+                <div class="listing-card">
+                    ${car.image ? `<img src="${car.image}" class="listing-img">` : ''}
+                    <h3 class="listing-title">${car.year} ${car.brand} ${car.model}</h3>
+                    <p class="listing-price">₱${Number(car.price).toLocaleString()}</p>
+                    <button onclick="openModal(${index})" class="contact-btn">
+                        Contact Seller
+                    </button>
+                </div>
+            `).join('');
+        });
+
+        function openModal(index) {
+            const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+            const car = approvedCars[index];
+            currentCarIndex = index;
+
+            document.getElementById('modalSpecs').innerHTML = `
+                <p><strong>Transmission:</strong> ${car.transmission}</p>
+                <p><strong>Variant:</strong> ${car.variant || 'N/A'}</p>
+                <p><strong>Mileage:</strong> ${Number(car.mileage).toLocaleString()} km</p>
+                
+                <div class="seller-info-box">
+                    <p class="seller-info-title">Seller Information:</p>
+                    <p><strong>Name:</strong> ${car.seller || 'N/A'}</p>
+                    <p><strong>Phone:</strong> ${car.phone || 'N/A'}</p>
+                    <p><strong>Email:</strong> ${car.email || 'N/A'}</p>
+                </div>
+            `;
+            document.getElementById('carModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('carModal').style.display = 'none';
+        }
+
+        function handlePurchase() {
+            const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+            const carListings = JSON.parse(localStorage.getItem('carListings') || '[]');
+            
+            const securedCar = approvedCars[currentCarIndex];
+
+            // Find the car in the master list and update status
+            const masterIndex = carListings.findIndex(car => 
+                car.brand === securedCar.brand && 
+                car.model === securedCar.model && 
+                car.seller === securedCar.seller
+            );
+
+            if (masterIndex !== -1) {
+                carListings[masterIndex].status = 'SECURED'; // New status
+                localStorage.setItem('carListings', JSON.stringify(carListings));
+                
+                alert("Success! This vehicle is now marked as SECURED for the Manager.");
+            }
+
+            closeModal();
+        }
     </script>
 </body>
 </html>

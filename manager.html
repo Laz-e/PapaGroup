@@ -215,8 +215,20 @@
             color: white;
         }
 
-        .edit-btn { background: #ffc107; }
-        .delete-btn { background: #dc3545; color: white; }
+        .edit-btn { 
+            background: #ffc107; 
+        }
+
+        .delete-btn { 
+            background: #dc3545; 
+            color: white; 
+        }
+
+        .status-secured { 
+            color: #1D2951; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+        }
     </style>
 </head> 
 <body>
@@ -274,8 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             <h3>${car.year} ${car.brand} ${car.model}</h3>
             <p><strong>Status:</strong> 
-                <span class="${car.status === 'approved' ? 'status-approved' : 'status-pending'}">
-                    ${car.status === 'approved' ? 'APPROVED' : 'PENDING'}
+                <span class="${car.status === 'approved' ? 'status-approved' : 
+                            car.status === 'SECURED' ? 'status-secured' : 'status-pending'}">
+                    ${car.status.toUpperCase()}
                 </span>
             </p>
             <p><strong>Price:</strong> ₱${Number(car.price).toLocaleString()}</p>
