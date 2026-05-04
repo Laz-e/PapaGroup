@@ -307,31 +307,13 @@
         function populateYearDropdown(brand) {
         yearSelect.innerHTML = '<option value="" disabled selected>Select Year</option>';
         
-        let startYear = 1990; 
+        let startYear = 2006; 
         const endYear = 2026;
 
-        if (brand === 'Ford') {
-            startYear = 2006;
-        } else if (brand === 'Honda') {
-            startYear = 2006;
-        } else if (brand === 'Hyundai') {
-            startYear = 2006;
-        } else if (brand === 'Isuzu') {
+        if (brand === 'Isuzu') {
             startYear = 2007;
-        } else if (brand === 'Mitsubishi') {
-            startYear = 2006;
-        } else if (brand === 'Nissan') {
-            startYear = 2006;
-        } else if (brand === 'Toyota') {
-            startYear = 2006;
-        } else if (brand === 'Audi') {
-            startYear = 2006;
-        } else if (brand === 'BMW') {
-            startYear = 2006;
         } else if (brand === 'BYD') {
             startYear = 2011;
-        } else if (brand === 'Chevrolet') {
-            startYear = 2006;
         } else if (brand === 'Land Rover') {
             startYear = 2010;
         }  else if (brand === 'Lexus') {
@@ -340,9 +322,7 @@
             startYear = 2007;
         } else if (brand === 'MG') {
             startYear = 2011;
-        } else if (brand === 'Suzuki') {
-            startYear = 2006;
-        } else if (brand === 'Kia') {
+        }  else if (brand === 'Kia') {
             startYear = 2015;
         } else if (brand === 'Subaru') {
             startYear = 2008;
