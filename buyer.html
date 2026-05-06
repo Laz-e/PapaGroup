@@ -155,24 +155,46 @@
             margin: 10px 0;
         }
 
-        .contact-btn {
-            width: 100%;
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .contact-btn, .more-info-btn {
+            flex: 1;
             padding: 10px;
-            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
-            color: white;
             border: none;
             border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .contact-btn:hover { 
+
+        .contact-btn {
             background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
-            transform: scale(1.02); 
+            color: white;
         }
+
+        .contact-btn:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+        }
+
+        .more-info-btn {
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            color: white;
+        }
+
+        .more-info-btn:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+        }
+
         /* =========================================
-        5. MODAL STYLES
+        5. CONTACT MODAL STYLES
         ========================================= */
-        .modal-overlay {
+        .contact-modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
@@ -181,6 +203,10 @@
             z-index: 2000;
             justify-content: center;
             align-items: center;
+        }
+
+        .contact-modal-overlay.open {
+            display: flex;
         }
 
         .modal-content {
@@ -199,6 +225,11 @@
             font-size: 28px;
             cursor: pointer;
             color: #666;
+            transition: color 0.2s;
+        }
+
+        .close-icon:hover {
+            color: #000;
         }
 
         .modal-header {
@@ -207,7 +238,7 @@
             border-bottom: 2px solid #eee;
             padding-bottom: 10px;
         }
-
+        
         .modal-body {
             color: #333;
             line-height: 1.6;
@@ -222,14 +253,117 @@
         }
 
         .seller-info-title {
-            margin: 0;
+            margin: 0 0 10px 0;
             color: #1D2951;
             font-weight: bold;
         }
 
-        .purchase-btn {
-            margin-top: 25px;
+        .contact-link {
+            display: inline-block;
+            margin: 8px 5px 8px 0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .phone-link {
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+        }
+
+        .phone-link:hover {
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            transform: translateY(-2px);
+        }
+
+        .sms-link {
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+        }
+
+        .sms-link:hover {
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            transform: translateY(-2px);
+        }
+
+        .email-link {
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+        }
+
+        .email-link:hover {
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            transform: translateY(-2px);
+        }
+
+        /* =========================================
+        6. VEHICLE INFO MODAL STYLES
+        ========================================= */
+        .vehicle-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .vehicle-modal-overlay.open {
+            display: flex;
+        }
+
+        .vehicle-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            margin: auto;
+        }
+
+        .vehicle-modal-content img {
             width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .spec-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #1D2951;
+;
+        }
+
+        .spec-item strong {
+            color: #1D2951;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .spec-item span {
+            color: #1D2951;
+            font-size: 0.95rem;
+        }
+
+        .purchase-btn {
+            width: 100%;
+            margin-top: 25px;
             padding: 15px;
             background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
             color: white;
@@ -240,12 +374,24 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-        .purchase-btn:hover { 
-            transform: scale(1.02); 
+
+        .purchase-btn:hover {
+            transform: scale(1.02);
             background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
-}
-        .purchase-btn:active { 
-            transform: scale(0.98); 
+        }
+
+        .purchase-btn:active {
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 600px) {
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .specs-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -270,12 +416,22 @@
         <div id="buyerListingContainer" class="listing-container"></div>
     </main>
 
-    <div id="carModal" class="modal-overlay">
+    <!-- CONTACT SELLER MODAL -->
+    <div id="contactModal" class="contact-modal-overlay">
         <div class="modal-content">
-            <span onclick="closeModal()" class="close-icon">&times;</span>
-            <h2 class="modal-header">Vehicle Details</h2>
-            <div id="modalSpecs" class="modal-body">
+            <span onclick="closeContactModal()" class="close-icon">&times;</span>
+            <h2 class="modal-header">Contact Seller</h2>
+            <div id="contactModalBody" class="modal-body">
             </div>
+        </div>
+    </div>
+
+    <!-- VEHICLE DETAILS MODAL -->
+    <div id="vehicleModal" class="vehicle-modal-overlay">
+        <div class="vehicle-modal-content">
+            <span onclick="closeVehicleModal()" class="close-icon">&times;</span>
+            <h2 class="modal-header">Vehicle Details</h2>
+            <div id="vehicleModalBody"></div>
             <button onclick="handlePurchase()" class="purchase-btn">
                 Secure This Vehicle
             </button>
@@ -283,12 +439,13 @@
     </div>
 
     <script>
+        let currentCarIndex = null;
+
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('buyerListingContainer');
             const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
             const userRole = sessionStorage.getItem('userRole');
             const logoutLink = document.querySelector('.logout-link');
-            let currentCarIndex = null;
 
             if (userRole === 'guest') {
                 logoutLink.textContent = 'Sign In';
@@ -317,35 +474,98 @@
                     ${car.image ? `<img src="${car.image}" class="listing-img">` : ''}
                     <h3 class="listing-title">${car.year} ${car.brand} ${car.model}</h3>
                     <p class="listing-price">₱${Number(car.price).toLocaleString()}</p>
-                    <button onclick="openModal(${index})" class="contact-btn">
-                        Contact Seller
-                    </button>
+                    <div class="btn-group">
+                        <button onclick="openContactModal(${index})" class="contact-btn">
+                            <i class="fas fa-phone"></i> Contact Seller
+                        </button>
+                        <button onclick="openVehicleModal(${index})" class="more-info-btn">
+                            <i class="fas fa-info-circle"></i> More Info
+                        </button>
+                    </div>
                 </div>
             `).join('');
         });
 
-        function openModal(index) {
+        // ============================================
+        // CONTACT SELLER MODAL FUNCTIONS
+        // ============================================
+        function openContactModal(index) {
+            const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+            const car = approvedCars[index];
+
+            document.getElementById('contactModalBody').innerHTML = `
+                <div class="seller-info-box">
+                    <p class="seller-info-title">Seller Information:</p>
+                    <p><strong>Name:</strong> ${car.seller || 'N/A'}</p>
+                    <p style="margin-top: 10px;"><strong>Contact Methods:</strong></p>
+                    
+                    <div style="margin-top: 10px;">
+                        <a href="tel:${car.phone}" class="contact-link phone-link" title="Call seller">
+                            <i class="fas fa-phone"></i> Call: ${car.phone}
+                        </a>
+                        <a href="sms:${car.phone}" class="contact-link sms-link" title="Send SMS">
+                            <i class="fas fa-comments"></i> Text: ${car.phone}
+                        </a>
+                        <a href="mailto:${car.email}" class="contact-link email-link" title="Send Email">
+                            <i class="fas fa-envelope"></i> Email
+                        </a>
+                    </div>
+                </div>
+            `;
+            document.getElementById('contactModal').classList.add('open');
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.remove('open');
+        }
+
+        // ============================================
+        // VEHICLE DETAILS MODAL FUNCTIONS
+        // ============================================
+        function openVehicleModal(index) {
             const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
             const car = approvedCars[index];
             currentCarIndex = index;
 
-            document.getElementById('modalSpecs').innerHTML = `
-                <p><strong>Transmission:</strong> ${car.transmission}</p>
-                <p><strong>Variant:</strong> ${car.variant || 'N/A'}</p>
-                <p><strong>Mileage:</strong> ${Number(car.mileage).toLocaleString()} km</p>
+            document.getElementById('vehicleModalBody').innerHTML = `
+                ${car.image ? `<img src="${car.image}" alt="Vehicle Image">` : ''}
                 
-                <div class="seller-info-box">
-                    <p class="seller-info-title">Seller Information:</p>
-                    <p><strong>Name:</strong> ${car.seller || 'N/A'}</p>
-                    <p><strong>Phone:</strong> ${car.phone || 'N/A'}</p>
-                    <p><strong>Email:</strong> ${car.email || 'N/A'}</p>
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <strong>Brand</strong>
+                        <span>${car.brand}</span>
+                    </div>
+                    <div class="spec-item">
+                        <strong>Model</strong>
+                        <span>${car.model}</span>
+                    </div>
+                    <div class="spec-item">
+                        <strong>Year</strong>
+                        <span>${car.year}</span>
+                    </div>
+                    <div class="spec-item">
+                        <strong>Transmission</strong>
+                        <span>${car.transmission}</span>
+                    </div>
+                    <div class="spec-item">
+                        <strong>Variant</strong>
+                        <span>${car.variant || 'N/A'}</span>
+                    </div>
+                    <div class="spec-item">
+                        <strong>Mileage</strong>
+                        <span>${Number(car.mileage).toLocaleString()} km</span>
+                    </div>
+                </div>
+
+                <div style=" padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="margin: 0; color: black;"><strong>Price:</strong> ₱${Number(car.price).toLocaleString()}</p>
                 </div>
             `;
-            document.getElementById('carModal').style.display = 'flex';
+            document.getElementById('vehicleModal').classList.add('open');
         }
 
-        function closeModal() {
-            document.getElementById('carModal').style.display = 'none';
+        function closeVehicleModal() {
+            document.getElementById('vehicleModal').classList.remove('open');
         }
 
         function handlePurchase() {
@@ -354,7 +574,6 @@
             
             const securedCar = approvedCars[currentCarIndex];
 
-            // Find the car in the master list and update status
             const masterIndex = carListings.findIndex(car => 
                 car.brand === securedCar.brand && 
                 car.model === securedCar.model && 
@@ -362,14 +581,26 @@
             );
 
             if (masterIndex !== -1) {
-                carListings[masterIndex].status = 'SECURED'; // New status
+                carListings[masterIndex].status = 'SECURED';
                 localStorage.setItem('carListings', JSON.stringify(carListings));
                 
                 alert("Success! This vehicle is now marked as SECURED for the Manager.");
             }
 
-            closeModal();
+            closeVehicleModal();
         }
+
+        window.addEventListener('click', (e) => {
+            const contactModal = document.getElementById('contactModal');
+            const vehicleModal = document.getElementById('vehicleModal');
+
+            if (e.target === contactModal) {
+                closeContactModal();
+            }
+            if (e.target === vehicleModal) {
+                closeVehicleModal();
+            }
+        });
     </script>
 </body>
 </html>
