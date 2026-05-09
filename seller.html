@@ -10,6 +10,227 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styless.css">
+  <style>
+    /* CHATHEAD BUBBLE STYLES */
+    .chathead-bubble {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 999;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .chathead-bubble:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+
+    .chathead-bubble i {
+        color: white;
+        font-size: 28px;
+    }
+
+    .chathead-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #ff4757;
+        color: white;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        display: none;
+    }
+
+    .chathead-badge.show {
+        display: flex;
+    }
+
+    /* CHATHEAD WINDOW STYLES */
+    .chathead-window {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 350px;
+        height: 450px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        display: none;
+        flex-direction: column;
+        z-index: 999;
+        overflow: hidden;
+    }
+
+    .chathead-window.open {
+        display: flex;
+    }
+
+    .chathead-header {
+        background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chathead-header h3 {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .chathead-close {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 20px;
+        transition: transform 0.2s;
+    }
+
+    .chathead-close:hover {
+        transform: scale(1.2);
+    }
+
+    .chathead-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        background: #f8f9fa;
+    }
+
+    .message {
+        margin-bottom: 12px;
+        display: flex;
+        flex-direction: column;
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .message.own {
+        align-items: flex-end;
+    }
+
+    .message-content {
+        max-width: 80%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        word-wrap: break-word;
+    }
+
+    .message.own .message-content {
+        background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+        color: white;
+        border-radius: 18px 18px 4px 18px;
+    }
+
+    .message.other .message-content {
+        background: #e0e0e0;
+        color: #333;
+        border-radius: 18px 18px 18px 4px;
+    }
+
+    .message-time {
+        font-size: 0.75rem;
+        color: #999;
+        margin-top: 4px;
+        padding: 0 12px;
+    }
+
+    .chathead-input-area {
+        padding: 12px;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        gap: 8px;
+    }
+
+    .chathead-input {
+        flex: 1;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        font-family: inherit;
+        resize: none;
+        max-height: 80px;
+    }
+
+    .chathead-input:focus {
+        outline: none;
+        border-color: #a855f7;
+    }
+
+    .chathead-send {
+        background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+    }
+
+    .chathead-send:hover {
+        transform: scale(1.05);
+    }
+
+    .chathead-send:active {
+        transform: scale(0.95);
+    }
+
+    .no-conversation {
+        padding: 40px 20px;
+        text-align: center;
+        color: #999;
+    }
+
+    .no-conversation i {
+        font-size: 48px;
+        color: #ddd;
+        margin-bottom: 10px;
+    }
+
+    @media (max-width: 480px) {
+        .chathead-window {
+            width: 90vw;
+            height: 70vh;
+            bottom: 80px;
+            right: 5%;
+            left: 5%;
+        }
+    }
+  </style>
 </head>
 <body>
 <header class="header">
@@ -25,7 +246,8 @@
       <li><a href="frontpage.html">Home</a></li>
       <li><a href="buyer.html">Buy Cars</a></li>
       <li><a href="seller.html">Sell My Car</a></li>
-      <li><a href="logout.html" class="logout-link">Logout</a></li>    </ul>
+      <li><a href="seller-dashboard.html" class="messages-link" title="View all messages">Messages</a></li>
+      <li><a href="index.html" class="logout-link">Logout</a></li>    </ul>
   </nav>
 </header>
 
@@ -291,6 +513,36 @@
   </div>
 </div>
 
+<!-- CHATHEAD BUBBLE -->
+<div class="chathead-bubble" id="chatheadBubble">
+  <i class="fas fa-comments"></i>
+  <div class="chathead-badge" id="chatheadBadge">0</div>
+</div>
+
+<!-- CHATHEAD WINDOW -->
+<div class="chathead-window" id="chatheadWindow">
+  <div class="chathead-header">
+    <h3 id="chatheadTitle">Messages</h3>
+    <button class="chathead-close" id="chatheadClose">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  
+  <div class="chathead-messages" id="chatheadMessages">
+    <div class="no-conversation">
+      <i class="fas fa-inbox"></i>
+      <p>No active conversations</p>
+    </div>
+  </div>
+  
+  <div class="chathead-input-area" id="inputArea" style="display: none;">
+    <textarea class="chathead-input" id="chatheadInput" placeholder="Type a message..." rows="1"></textarea>
+    <button class="chathead-send" id="chatheadSend">
+      <i class="fas fa-paper-plane"></i>
+    </button>
+  </div>
+</div>
+
 <script>
         document.addEventListener('DOMContentLoaded', () => {
         const brandCards = document.querySelectorAll('.brand-card');
@@ -325,6 +577,14 @@
                 window.location.href = 'index.html';
             }
         });
+
+        // Hide Messages link for non-sellers
+        const messagesLink = document.querySelector('.messages-link');
+        if (userRole === 'seller' || userRole === 'user') {
+            messagesLink.style.display = 'inline';
+        } else {
+            messagesLink.style.display = 'none';
+        }
 
         function populateYearDropdown(brand) {
         yearSelect.innerHTML = '<option value="" disabled selected>Select Year</option>';
@@ -436,6 +696,176 @@
             sellerModal.classList.remove('open');
         });
     });
+
+    // ============================================
+    // CHATHEAD FUNCTIONALITY FOR SELLERS
+    // ============================================
+    const chatheadBubble = document.getElementById('chatheadBubble');
+    const chatheadWindow = document.getElementById('chatheadWindow');
+    const chatheadClose = document.getElementById('chatheadClose');
+    const chatheadMessages = document.getElementById('chatheadMessages');
+    const chatheadInput = document.getElementById('chatheadInput');
+    const chatheadSend = document.getElementById('chatheadSend');
+    const inputArea = document.getElementById('inputArea');
+    const chatheadTitle = document.getElementById('chatheadTitle');
+    const chatheadBadge = document.getElementById('chatheadBadge');
+
+    let currentConversationId = null;
+
+    chatheadBubble.addEventListener('click', () => {
+        chatheadWindow.classList.toggle('open');
+        loadAllConversations();
+    });
+
+    chatheadClose.addEventListener('click', () => {
+        chatheadWindow.classList.remove('open');
+        currentConversationId = null;
+    });
+
+    chatheadInput.addEventListener('input', () => {
+        chatheadInput.style.height = 'auto';
+        chatheadInput.style.height = Math.min(chatheadInput.scrollHeight, 80) + 'px';
+    });
+
+    function sendChatheadMessage() {
+        const messageText = chatheadInput.value.trim();
+        if (!messageText || !currentConversationId) return;
+
+        const messages = JSON.parse(localStorage.getItem('carVaultMessages') || '[]');
+        
+        const activeUser = sessionStorage.getItem('activeUser');
+        const [buyerName, carInfo] = currentConversationId.split('|');
+        const [year, brand, model] = carInfo.split(' ');
+
+        messages.push({
+            sender: activeUser || 'Seller',
+            receiver: buyerName,
+            content: messageText,
+            vehicleBrand: brand,
+            vehicleModel: model,
+            vehicleYear: year,
+            timestamp: new Date().toISOString(),
+            read: false
+        });
+
+        localStorage.setItem('carVaultMessages', JSON.stringify(messages));
+        chatheadInput.value = '';
+        chatheadInput.style.height = 'auto';
+        loadChatheadMessages();
+    }
+
+    chatheadSend.addEventListener('click', sendChatheadMessage);
+    chatheadInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendChatheadMessage();
+        }
+    });
+
+    function loadChatheadMessages() {
+        if (!currentConversationId) return;
+
+        const allMessages = JSON.parse(localStorage.getItem('carVaultMessages') || '[]');
+        const activeUser = sessionStorage.getItem('activeUser');
+        const [buyerName, carInfo] = currentConversationId.split('|');
+        
+        const conversationMessages = allMessages.filter(msg => 
+            (msg.sender === activeUser && msg.receiver === buyerName) ||
+            (msg.sender === buyerName && msg.receiver === activeUser)
+        );
+
+        if (conversationMessages.length === 0) {
+            chatheadMessages.innerHTML = '<div class="no-conversation"><p>Start the conversation</p></div>';
+            return;
+        }
+
+        chatheadMessages.innerHTML = conversationMessages.map((msg) => {
+            const isOwn = msg.sender === activeUser;
+            return `
+                <div class="message ${isOwn ? 'own' : 'other'}">
+                    <div class="message-content">${escapeHtml(msg.content)}</div>
+                    <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+                </div>
+            `;
+        }).join('');
+
+        chatheadMessages.scrollTop = chatheadMessages.scrollHeight;
+    }
+
+    function loadAllConversations() {
+        const allMessages = JSON.parse(localStorage.getItem('carVaultMessages') || '[]');
+        const activeUser = sessionStorage.getItem('activeUser');
+
+        // Get unique conversations FOR this seller
+        const conversations = {};
+        allMessages.forEach(msg => {
+            if (msg.receiver === activeUser) {
+                const key = `${msg.sender}|${msg.vehicleYear} ${msg.vehicleBrand} ${msg.vehicleModel}`;
+                conversations[key] = {
+                    buyerName: msg.sender,
+                    carInfo: `${msg.vehicleYear} ${msg.vehicleBrand} ${msg.vehicleModel}`,
+                    lastMessage: msg.content,
+                    unread: !msg.read
+                };
+            }
+        });
+
+        if (Object.keys(conversations).length === 0) {
+            chatheadMessages.innerHTML = '<div class="no-conversation"><i class="fas fa-inbox"></i><p>No messages yet</p></div>';
+            inputArea.style.display = 'none';
+            return;
+        }
+
+        chatheadMessages.innerHTML = Object.entries(conversations).map(([key, conv]) => `
+            <div style="padding: 10px; border-bottom: 1px solid #eee; cursor: pointer;" onclick="openConversation('${key.replace(/'/g, "\\'")}')">
+                <div style="font-weight: bold; color: #1D2951;">${conv.buyerName}</div>
+                <div style="font-size: 0.85rem; color: #666;">${conv.carInfo}</div>
+                <div style="font-size: 0.8rem; color: #999; margin-top: 5px;">${conv.lastMessage.substring(0, 40)}...</div>
+            </div>
+        `).join('');
+    }
+
+    function openConversation(key) {
+        currentConversationId = key;
+        const [buyerName, carInfo] = key.split('|');
+        chatheadTitle.textContent = `Chat with ${buyerName}`;
+        inputArea.style.display = 'flex';
+        loadChatheadMessages();
+        chatheadInput.focus();
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Update unread badge every second
+    setInterval(() => {
+        const messages = JSON.parse(localStorage.getItem('carVaultMessages') || '[]');
+        const activeUser = sessionStorage.getItem('activeUser');
+        let unreadCount = 0;
+
+        messages.forEach(msg => {
+            if (msg.receiver === activeUser && !msg.read) {
+                unreadCount++;
+            }
+        });
+
+        if (unreadCount > 0) {
+            chatheadBadge.textContent = unreadCount;
+            chatheadBadge.classList.add('show');
+        } else {
+            chatheadBadge.classList.remove('show');
+        }
+    }, 1000);
+
+    // Refresh messages every 2 seconds when conversation is open
+    setInterval(() => {
+        if (currentConversationId && chatheadWindow.classList.contains('open')) {
+            loadChatheadMessages();
+        }
+    }, 2000);
 
     function redirectToLogin() {
         window.location.href = 'index.html';
