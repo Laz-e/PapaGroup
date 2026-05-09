@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chathead System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* =========================================
+        CHATHEAD BUBBLE STYLES
+        ========================================= */
+        .chathead-bubble {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 999;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .chathead-bubble:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+        }
+
+        .chathead-bubble i {
+            color: white;
+            font-size: 28px;
+        }
+
+        .chathead-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .chathead-badge.show {
+            display: flex;
+        }
+
+        /* =========================================
+        CHATHEAD WINDOW STYLES
+        ========================================= */
+        .chathead-window {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            display: none;
+            flex-direction: column;
+            z-index: 999;
+            overflow: hidden;
+        }
+
+        .chathead-window.open {
+            display: flex;
+        }
+
+        .chathead-header {
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chathead-header h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .chathead-close {
+            background: none;
+            border: none;
+            color: rgb(129, 50, 50);
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform 0.2s;
+            width: 30px;
+        }
+
+        .chathead-close:hover {
+            transform: scale(1.2);
+        }
+
+        .chathead-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.own {
+            align-items: flex-end;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message.own .message-content {
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            color: white;
+            border-radius: 18px 18px 4px 18px;
+        }
+
+        .message.other .message-content {
+            background: #e0e0e0;
+            color: #333;
+            border-radius: 18px 18px 18px 4px;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 4px;
+            padding: 0 12px;
+        }
+
+        .chathead-input-area {
+            padding: 12px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .chathead-input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            resize: none;
+            max-height: 80px;
+        }
+
+        .chathead-input:focus {
+            outline: none;
+            border-color: #1D2951;
+        }
+
+        .chathead-send {
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .chathead-send:hover {
+            transform: scale(1.05);
+        }
+
+        .chathead-send:active {
+            transform: scale(0.95);
+        }
+
+        .no-conversation {
+            padding: 40px 20px;
+            text-align: center;
+            color: #999;
+        }
+
+        .no-conversation i {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 10px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .chathead-window {
+                width: 90vw;
+                height: 70vh;
+                bottom: 80px;
+                right: 5%;
+                left: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="chathead-bubble" id="chatheadBubble">
+    <i class="fas fa-comments"></i>
+    <div class="chathead-badge" id="chatheadBadge">0</div>
+</div>
+
+<div class="chathead-window" id="chatheadWindow">
+    <div class="chathead-header">
+        <h3 id="chatheadTitle">Messages</h3>
+        <button class="chathead-close" id="chatheadClose">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="chathead-messages" id="chatheadMessages">
+        <div class="no-conversation">
+            <i class="fas fa-inbox"></i>
+            <p>No active conversations</p>
+        </div>
+    </div>
+    
+    <div class="chathead-input-area" id="inputArea" style="display: none;">
+        <textarea class="chathead-input" id="chatheadInput" placeholder="Type a message..." rows="1"></textarea>
+        <button class="chathead-send" id="chatheadSend">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+    const chatheadBubble = document.getElementById('chatheadBubble');
+    const chatheadWindow = document.getElementById('chatheadWindow');
+    const chatheadClose = document.getElementById('chatheadClose');
+    const chatheadMessages = document.getElementById('chatheadMessages');
+    const chatheadInput = document.getElementById('chatheadInput');
+    const chatheadSend = document.getElementById('chatheadSend');
+    const inputArea = document.getElementById('inputArea');
+    const chatheadTitle = document.getElementById('chatheadTitle');
+    const chatheadBadge = document.getElementById('chatheadBadge');
+
+    let currentConversationId = null;
+
+    chatheadBubble.addEventListener('click', () => {
+        chatheadWindow.classList.toggle('open');
+    });
+
+    chatheadClose.addEventListener('click', () => {
+        chatheadWindow.classList.remove('open');
+        currentConversationId = null;
+    });
+
+    chatheadInput.addEventListener('input', () => {
+        chatheadInput.style.height = 'auto';
+        chatheadInput.style.height = Math.min(chatheadInput.scrollHeight, 80) + 'px';
+    });
+
+    chatheadSend.addEventListener('click', sendMessage);
+    chatheadInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+        const messageText = chatheadInput.value.trim();
+        if (!messageText || !currentConversationId) return;
+
+        const messages = JSON.parse(localStorage.getItem('carVaultMessages') || '[]');
+        const userRole = sessionStorage.getItem('userRole');
+        const activeUser = sessionStorage.getItem('activeUser');
+
+        const [sellerName, carInfo] = currentConversationId.split('|');
+        const [year, brand, model] = carInfo.split(' ');
+
+        messages.push({
+            sender: activeUser || 'User',
+            receiver: sellerName,
+            content: messageText,
+            vehicleBrand: brand,
+            vehicleModel: model,
+            vehicleYear: year,
+            timestamp: new Date().toISOString(),
+            read: false
+        });
+
+        localStorage.setItem('carVaultMessages', JSON.stringify(messages));
+        chatheadInput.value = '';
+        chatheadInput.style.height = 'auto';
+        loadMessages();
+    }
+
+    function loadMessages() {
+        if (!currentConversationId) return;
+
+        const allMessages = JSON.parse(localStorage.getItem('carVaultMessages') || '[]');
+        const userRole = sessionStorage.getItem('userRole');
+        const activeUser = sessionStorage.getItem('activeUser');
+
+        const [sellerName, carInfo] = currentConversationId.split('|');
+
+        // Filter for this conversation
+        const conversationMessages = allMessages.filter(msg => 
+            (msg.sender === activeUser && msg.receiver === sellerName) ||
+            (msg.sender === sellerName && msg.receiver === activeUser)
+        );
+
+        if (conversationMessages.length === 0) {
+            chatheadMessages.innerHTML = '<div class="no-conversation"><p>Start the conversation</p></div>';
+            return;
+        }
+
+        chatheadMessages.innerHTML = conversationMessages.map((msg) => {
+            const isOwn = msg.sender === activeUser;
+            return `
+                <div class="message ${isOwn ? 'own' : 'other'}">
+                    <div class="message-content">${escapeHtml(msg.content)}</div>
+                    <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+                </div>
+            `;
+        }).join('');
+
+        chatheadMessages.scrollTop = chatheadMessages.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+        window.openChatheadWithSeller = function(sellerName, carInfo) {
+        currentConversationId = `${sellerName}|${carInfo}`; 
+        
+        chatheadTitle.textContent = `Chat with ${sellerName}`;
+        inputArea.style.display = 'flex';
+        
+        loadMessages();
+        chatheadWindow.classList.add('open');
+        chatheadInput.focus();
+    };
+
+    setInterval(() => {
+        const messages = JSON.parse(localStorage.getItem('carVaultMessages') || '[]');
+        const activeUser = sessionStorage.getItem('activeUser');
+        let unreadCount = 0;
+
+        messages.forEach(msg => {
+            if (msg.receiver === activeUser && !msg.read) {
+                unreadCount++;
+            }
+        });
+
+        if (unreadCount > 0) {
+            chatheadBadge.textContent = unreadCount;
+            chatheadBadge.classList.add('show');
+        } else {
+            chatheadBadge.classList.remove('show');
+        }
+    }, 1000);
+
+    // Refresh messages every 2 seconds
+    setInterval(() => {
+        if (currentConversationId) {
+            loadMessages();
+        }
+    }, 2000);
+</script>
+
+</body>
+</html>
