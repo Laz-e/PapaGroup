@@ -755,24 +755,22 @@
             const messageText = chatheadInput.value.trim();
             if (!messageText || !currentConversationId) return;
 
-            // CHANGE: Use unified storage key
             const messages = JSON.parse(localStorage.getItem('carVaultMessages') || '[]');
             
             const userRole = sessionStorage.getItem('userRole');
             const activeUser = sessionStorage.getItem('activeUser');
             
-            // Extract seller name and car details from conversation ID
             const [sellerName, carInfo] = currentConversationId.split('|');
             const [year, brand, model] = carInfo.split(' ');
 
             messages.push({
                 sender: activeUser || 'User',
-                receiver: sellerName,  // CHANGED: Add receiver
+                receiver: sellerName,  
                 content: messageText,
-                vehicleBrand: brand,   // CHANGED: Add vehicle details
+                vehicleBrand: brand,   
                 vehicleModel: model,
                 vehicleYear: year,
-                timestamp: new Date().toISOString(),  // CHANGED: ISO format
+                timestamp: new Date().toISOString(),  
                 read: false
             });
 
@@ -793,7 +791,6 @@
         function loadChatheadMessages() {
             if (!currentConversationId) return;
 
-            // CHANGED: Read from unified storage
             const allMessages = JSON.parse(localStorage.getItem('carVaultMessages') || '[]');
             const userRole = sessionStorage.getItem('userRole');
             const activeUser = sessionStorage.getItem('activeUser');
@@ -858,7 +855,6 @@
             const activeUser = sessionStorage.getItem('activeUser');
             let unreadCount = 0;
 
-            // Count unread messages sent TO this buyer
             messages.forEach(msg => {
                 if (msg.receiver === activeUser && !msg.read) {
                     unreadCount++;
@@ -873,7 +869,6 @@
             }
         }, 1000);
 
-        // Refresh messages every 2 seconds
         setInterval(() => {
             if (currentConversationId) {
                 loadChatheadMessages();
@@ -1013,25 +1008,41 @@
         }
 
         function handlePurchase() {
-            const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
-            const carListings = JSON.parse(localStorage.getItem('carListings') || '[]');
-            
-            const securedCar = approvedCars[currentCarIndex];
+            const userRole = sessionStorage.getItem('userRole');
+            if (userRole === 'guest') {
+                closeVehicleModal();
+                document.getElementById('chatLoginModal').classList.add('open');
+                return;
+            }
 
-            const masterIndex = carListings.findIndex(car => 
-                car.brand === securedCar.brand && 
-                car.model === securedCar.model && 
+            if (!confirm("Are you sure you want to secure this vehicle? It will no longer be available to other buyers.")) return;
+
+            let approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+            let carListings = JSON.parse(localStorage.getItem('carListings') || '[]');
+
+            const securedCar = approvedCars[currentCarIndex];
+            if (!securedCar) return;
+
+            approvedCars.splice(currentCarIndex, 1);
+            localStorage.setItem('approvedCars', JSON.stringify(approvedCars));
+
+            const masterIndex = carListings.findIndex(car =>
+                car.brand === securedCar.brand &&
+                car.model === securedCar.model &&
                 car.seller === securedCar.seller
             );
 
             if (masterIndex !== -1) {
                 carListings[masterIndex].status = 'SECURED';
+                carListings[masterIndex].securedBy = sessionStorage.getItem('activeUser') || 'Unknown';
+                carListings[masterIndex].securedAt = new Date().toLocaleDateString();
                 localStorage.setItem('carListings', JSON.stringify(carListings));
-                
-                alert("Success! This vehicle is now marked as SECURED for the Manager.");
             }
 
             closeVehicleModal();
+            alert(`You have successfully secured the ${securedCar.year} ${securedCar.brand} ${securedCar.model}!\n\nContact the seller to finalize the transaction.`);
+
+            location.reload();
         }
 
         window.addEventListener('click', (e) => {
