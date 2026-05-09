@@ -617,6 +617,18 @@
             margin-bottom: 10px;
         }
 
+        .owner-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-style: italic;
+            border: 1px dashed rgba(255, 255, 255, 0.5);
+            width: 100%;
+        }
+        
         @media (max-width: 480px) {
             .chathead-window {
                 width: 90vw;
@@ -906,24 +918,35 @@
                 return;
             }
 
-            container.innerHTML = approvedCars.map((car, index) => `
-                <div class="listing-card">
-                    ${car.image ? `<img src="${car.image}" class="listing-img">` : ''}
-                    <h3 class="listing-title">${car.year} ${car.brand} ${car.model}</h3>
-                    <p class="listing-price">₱${Number(car.price).toLocaleString()}</p>
-                    <div class="btn-group">
-                        <button onclick="openContactModal(${index})" class="contact-btn">
-                            <i class="fas fa-phone"></i> Contact
-                        </button>
-                        <button onclick="openVehicleModal(${index})" class="more-info-btn">
-                            <i class="fas fa-info-circle"></i> Info
-                        </button>
-                        <button onclick="openChatheadWithSeller('${car.seller}', '${car.year} ${car.brand} ${car.model}')" class="chat-btn">
-                            <i class="fas fa-comments"></i> Chat
-                        </button>
+            container.innerHTML = approvedCars.map((car, index) => {
+                const isOwner = car.seller === sessionStorage.getItem('activeUser');
+
+                return `
+                    <div class="listing-card">
+                        ${car.image ? `<img src="${car.image}" class="listing-img">` : ''}
+                        <h3 class="listing-title">${car.year} ${car.brand} ${car.model}</h3>
+                        <p class="listing-price">₱${Number(car.price).toLocaleString()}</p>
+                        
+                        <div class="btn-group">
+                            ${!isOwner ? `
+                                <button onclick="openContactModal(${index})" class="contact-btn">
+                                    <i class="fas fa-phone"></i> Contact
+                                </button>
+                                <button onclick="openVehicleModal(${index})" class="more-info-btn">
+                                    <i class="fas fa-info-circle"></i> Info
+                                </button>
+                                <button onclick="openChatheadWithSeller('${car.seller}', '${car.year} ${car.brand} ${car.model}')" class="chat-btn">
+                                    <i class="fas fa-comments"></i> Chat
+                                </button>
+                            ` : `
+                                <div style="width: 100%; text-align: center; padding: 10px; color: #666; font-style: italic; background: #eee; border-radius: 5px;">
+                                    <i class="fas fa-user-check"></i> Your Listing
+                                </div>
+                            `}
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         });
 
         // ============================================
@@ -1009,19 +1032,27 @@
 
         function handlePurchase() {
             const userRole = sessionStorage.getItem('userRole');
+            const activeUser = sessionStorage.getItem('activeUser');
+
             if (userRole === 'guest') {
                 closeVehicleModal();
                 document.getElementById('chatLoginModal').classList.add('open');
                 return;
             }
 
-            if (!confirm("Are you sure you want to secure this vehicle? It will no longer be available to other buyers.")) return;
-
             let approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
             let carListings = JSON.parse(localStorage.getItem('carListings') || '[]');
-
             const securedCar = approvedCars[currentCarIndex];
+
             if (!securedCar) return;
+
+            if (securedCar.seller === activeUser) {
+                alert("You cannot secure a vehicle that you are currently selling.");
+                closeVehicleModal();
+                return;
+            }
+
+            if (!confirm("Are you sure you want to secure this vehicle? It will no longer be available to other buyers.")) return;
 
             approvedCars.splice(currentCarIndex, 1);
             localStorage.setItem('approvedCars', JSON.stringify(approvedCars));
@@ -1034,7 +1065,7 @@
 
             if (masterIndex !== -1) {
                 carListings[masterIndex].status = 'SECURED';
-                carListings[masterIndex].securedBy = sessionStorage.getItem('activeUser') || 'Unknown';
+                carListings[masterIndex].securedBy = activeUser || 'Unknown';
                 carListings[masterIndex].securedAt = new Date().toLocaleDateString();
                 localStorage.setItem('carListings', JSON.stringify(carListings));
             }
