@@ -11,6 +11,7 @@
 
   <link rel="stylesheet" href="styless.css">
   <style>
+    
     /* CHATHEAD BUBBLE STYLES */
     .chathead-bubble {
         position: fixed;
@@ -246,7 +247,6 @@
       <li><a href="frontpage.html">Home</a></li>
       <li><a href="buyer.html">Buy Cars</a></li>
       <li><a href="seller.html">Sell My Car</a></li>
-      <li><a href="seller-dashboard.html" class="messages-link" title="View all messages">Messages</a></li>
       <li><a href="index.html" class="logout-link">Logout</a></li>    </ul>
   </nav>
 </header>
@@ -560,6 +560,14 @@
         
         let tempVehicleData = {}; 
 
+        (function() {
+            const activeUser = sessionStorage.getItem('activeUser');
+            if (!activeUser) {
+                alert("Access Denied. Please log in first.");
+                window.location.href = 'index.html';
+            }
+        })();
+
         // GUEST / LOGOUT LOGIC (Added back)
         if (userRole === 'guest') {
             logoutLink.textContent = 'Sign In';
@@ -579,13 +587,7 @@
         });
 
         // Hide Messages link for non-sellers
-        const messagesLink = document.querySelector('.messages-link');
-        if (userRole === 'seller' || userRole === 'user') {
-            messagesLink.style.display = 'inline';
-        } else {
-            messagesLink.style.display = 'none';
-        }
-
+      
         function populateYearDropdown(brand) {
         yearSelect.innerHTML = '<option value="" disabled selected>Select Year</option>';
         

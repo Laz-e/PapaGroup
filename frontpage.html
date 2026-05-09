@@ -500,6 +500,13 @@
     window.addEventListener('DOMContentLoaded', (event) => {
         const userRole = sessionStorage.getItem('userRole');
         const logoutLink = document.querySelector('.logout-link');
+        const activeUser = sessionStorage.getItem('activeUser');
+
+            if (!activeUser) {
+                window.location.href = 'index.html';
+                return; // Stop further execution
+            }
+
 
         if (userRole === 'guest') {
             logoutLink.textContent = 'Sign In';

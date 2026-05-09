@@ -891,6 +891,13 @@
         // MAIN BUYER PAGE FUNCTIONALITY
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
+            const activeUser = sessionStorage.getItem('activeUser');
+
+            if (!activeUser) {
+                window.location.href = 'index.html'; // Kick them back to login if no session exists
+                return;
+            }
+            
             const container = document.getElementById('buyerListingContainer');
             const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
             const userRole = sessionStorage.getItem('userRole');

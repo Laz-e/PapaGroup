@@ -253,6 +253,15 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const userRole = sessionStorage.getItem('userRole');
+    
+    (function() {
+        const role = sessionStorage.getItem('userRole');
+        if (role !== 'manager') {
+            alert("Unauthorized access. Managers only.");
+            window.location.href = 'index.html';
+        }
+    })();
+
     if (userRole !== 'manager') {
         window.location.href = 'index.html'; 
         return;
