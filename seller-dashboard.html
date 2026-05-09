@@ -437,12 +437,16 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             // Check if seller is logged in
+           const activeUser = sessionStorage.getItem('activeUser');
             const userRole = sessionStorage.getItem('userRole');
-            const activeUser = sessionStorage.getItem('activeUser');
-
-            if (userRole !== 'seller' || !activeUser) {
+            
+            if (userRole !== 'guest' && userRole !== null) {
+                sessionStorage.setItem('userRole', 'seller');
+            }
+            const updatedRole = sessionStorage.getItem('userRole'); // re-read ✅
+            if (updatedRole !== 'seller' || !activeUser) {          // checks new value ✅
                 window.location.href = 'index.html';
-                return;
+                return; 
             }
 
             // Logout handler
@@ -469,15 +473,21 @@
             const conversations = {};
 
             allMessages.forEach(msg => {
+                // Normalize field names — buyer.html uses vehicleBrand/vehicleModel/vehicleYear,
+                // seller-dashboard.html used brand/model/year. Support both.
+                const brand = msg.vehicleBrand || msg.brand || '';
+                const model = msg.vehicleModel || msg.model || '';
+                const year  = msg.vehicleYear  || msg.year  || '';
+
                 // If message is FOR this seller (receiver is seller's name)
                 if (msg.receiver === activeUser) {
-                    const key = `${msg.sender}|${msg.vehicleBrand}|${msg.vehicleModel}`;
+                    const key = `${msg.sender}|${brand}|${model}`;
                     if (!conversations[key]) {
                         conversations[key] = {
                             buyerName: msg.sender,
-                            vehicleBrand: msg.brand || msg.vehicleBrand,
-                            vehicleModel: msg.model || msg.vehicleModel,
-                            vehicleYear: msg.year || msg.vehicleYear,
+                            vehicleBrand: brand,
+                            vehicleModel: model,
+                            vehicleYear: year,
                             lastMessage: msg.content,
                             lastTime: msg.timestamp,
                             unread: 0,
@@ -485,7 +495,6 @@
                         };
                     }
                     conversations[key].messages.push(msg);
-                    // Count unread messages for this conversation
                     if (!msg.read && msg.receiver === activeUser) {
                         conversations[key].unread++;
                     }
@@ -520,23 +529,6 @@
                 </div>
             `).join('');
         }
-        function openChatheadWithSeller(sellerName, carInfo) {
-            const userRole = sessionStorage.getItem('userRole');
-            
-            // Check if user is guest
-            if (userRole === 'guest') {
-                alert("You need to log in to chat with sellers.");
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            currentConversationId = `${sellerName}-${carInfo}`;
-            chatheadTitle.textContent = `Chat with ${sellerName}`;
-            inputArea.style.display = 'flex';
-            loadChatheadMessages();
-            chatheadWindow.classList.add('open');
-            chatheadInput.focus();
-        }
         
         function openConversation(key, buyerName, vehicleBrand, vehicleModel, vehicleYear) {
             currentConversation = key;
@@ -551,12 +543,14 @@
             });
             localStorage.setItem('carVaultMessages', JSON.stringify(allMessages));
 
-            // Filter messages for this conversation
-            const convMessages = allMessages.filter(msg => 
-                (msg.sender === buyerName || msg.receiver === buyerName) && 
-                msg.vehicleBrand === vehicleBrand && 
-                msg.vehicleModel === vehicleModel
-            );
+            // Filter messages for this conversation — handle both field naming conventions
+            const convMessages = allMessages.filter(msg => {
+                const msgBrand = msg.vehicleBrand || msg.brand || '';
+                const msgModel = msg.vehicleModel || msg.model || '';
+                return (msg.sender === buyerName || msg.receiver === buyerName) &&
+                       msgBrand === vehicleBrand &&
+                       msgModel === vehicleModel;
+            });
 
             const chatContent = document.getElementById('chatContent');
             chatContent.innerHTML = `
@@ -627,12 +621,12 @@
                 sender: activeUser,
                 receiver: buyerName,
                 content: content,
-                brand: vehicleBrand,
-                model: vehicleModel,
-                year: vehicleYear,
                 vehicleBrand: vehicleBrand,
                 vehicleModel: vehicleModel,
                 vehicleYear: vehicleYear,
+                brand: vehicleBrand,
+                model: vehicleModel,
+                year: vehicleYear,
                 timestamp: new Date().toISOString(),
                 read: false
             };
