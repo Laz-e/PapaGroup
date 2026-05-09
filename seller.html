@@ -349,8 +349,60 @@
       <img src="pictures/BYD.jpg" alt="BYD logo">
     </div>
 
+    <div class="brand-card" data-brand="Chana">
+      <img src="pictures/chana.jpg" alt="Chana logo">
+    </div>
+
+    <div class="brand-card" data-brand="Chery">
+      <img src="pictures/chery.jpg" alt="Chery logo">
+    </div>
+
     <div class="brand-card" data-brand="Chevrolet">
       <img src="pictures/chevrolet.jpg" alt="Chevrolet logo">
+    </div>
+
+    <div class="brand-card" data-brand="Chrysler">
+      <img src="pictures/chrysler.jpg" alt="Chrysler logo">
+    </div>
+
+    <div class="brand-card" data-brand="Dodge">
+      <img src="pictures/dodge.jpg" alt="Dodge logo">
+    </div>
+
+    <div class="brand-card" data-brand="Faw">
+      <img src="pictures/faw.jpg" alt="Faw logo">
+    </div>
+
+    <div class="brand-card" data-brand="Ferrari">
+      <img src="pictures/ferrari.jpg" alt="Ferrari logo">
+    </div>
+
+    <div class="brand-card" data-brand="Foton">
+      <img src="pictures/foton.jpg" alt="Foton logo">
+    </div>
+
+    <div class="brand-card" data-brand="Haima">
+      <img src="pictures/haima.jpg" alt="Haima logo">
+    </div>
+
+    <div class="brand-card" data-brand="Jaguar">
+      <img src="pictures/jaguar.jpg" alt="Jaguar logo">
+    </div>
+
+    <div class="brand-card" data-brand="JMC">
+      <img src="pictures/jmc.jpg" alt="JMC logo">
+    </div>
+
+    <div class="brand-card" data-brand="Kia">
+      <img src="pictures/kia.jpg" alt="Kia logo">
+    </div>
+
+    <div class="brand-card" data-brand="King Long">
+      <img src="pictures/kinglong.jpg" alt="King Long logo">
+    </div>
+
+    <div class="brand-card" data-brand="Lamborghini">
+      <img src="pictures/lamborghini.jpg" alt="Lamborghini logo">
     </div>
 
     <div class="brand-card" data-brand="Land Rover">
@@ -359,6 +411,14 @@
 
     <div class="brand-card" data-brand="Lexus">
       <img src="pictures/lexus.jpeg" alt="Lexus logo">
+    </div>
+
+    <div class="brand-card" data-brand="Mahindra">
+      <img src="pictures/mahindra.jpg" alt="Mahindra logo">
+    </div>
+
+    <div class="brand-card" data-brand="Maxus">
+      <img src="pictures/maxus.jpg" alt="Maxus logo">
     </div>
 
     <div class="brand-card" data-brand="Mazda">
@@ -373,12 +433,16 @@
       <img src="pictures/susuki.jpg" alt="Suzuki logo">
     </div>
 
-    <div class="brand-card" data-brand="Kia">
-      <img src="pictures/kia.jpg" alt="Kia logo">
-    </div>
-
     <div class="brand-card" data-brand="Subaru">
       <img src="pictures/subaru.jpeg" alt="Subaru logo">
+    </div>
+
+    <div class="brand-card" data-brand="Volkswagen">
+      <img src="pictures/volkswagen.jpg" alt="Volkswagen logo">
+    </div>
+
+    <div class="brand-card" data-brand="Volvo">
+      <img src="pictures/volvo.jpg" alt="Volvo logo">
     </div>
   </div>
 </section>
@@ -592,7 +656,7 @@
         yearSelect.innerHTML = '<option value="" disabled selected>Select Year</option>';
         
         let startYear = 2006; 
-        const endYear = 2026;
+        let endYear = 2026;
 
         if (brand === 'Isuzu') {
             startYear = 2007;
@@ -610,7 +674,34 @@
             startYear = 2015;
         } else if (brand === 'Subaru') {
             startYear = 2008;
-        }
+        } else if (brand == 'Chana') {
+            startYear = 2016;
+            endYear = 2017;
+        } else if (brand == 'Chery') {
+            startYear = 2011;
+        } else if (brand == 'Dodge') {
+            startYear = 2009;
+            endYear = 2023;
+        } else if (brand == 'Faw') {
+            startYear = 2011;
+        } else if (brand == 'Haima') {
+            startYear = 2011;
+        } else if (brand == 'JMC') {
+            startYear = 2016;
+        } else if (brand == 'King Long') {
+            startYear = 2011;
+        } else if (brand == 'Lamborghini') {
+            startYear = 2011;
+        } else if (brand == 'Mahindra') {
+            startYear = 2011;
+        } else if (brand == 'Maxus') {
+            startYear = 2019;
+        } else if (brand == 'Volkswagen') {
+            startYear = 2011;
+            endYear = 2025;
+        } else if (brand == 'Volvo') {
+            startYear = 2011;
+        } 
 
         for (let i = endYear; i >= startYear; i--) {
             const option = document.createElement('option');
