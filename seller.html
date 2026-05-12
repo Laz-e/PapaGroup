@@ -587,29 +587,44 @@
         });
 
         document.getElementById('sellerDetailsForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const activeUsername = sessionStorage.getItem('activeUser');
-            const userProfile = JSON.parse(localStorage.getItem(activeUsername) || '{}');
-            const fullName = `${userProfile.firstName || ''} ${userProfile.lastName || ''}`.trim() || activeUsername;
+          e.preventDefault();
+          const activeUsername = sessionStorage.getItem('activeUser');
+          const userProfile = JSON.parse(localStorage.getItem(activeUsername) || '{}');
+          const fullName = `${userProfile.firstName || ''} ${userProfile.lastName || ''}`.trim() || activeUsername;
 
-            const finalData = {
-                ...tempVehicleData,
-                seller: fullName.toUpperCase(),
-                sellerUsername: activeUsername.toLowerCase(), 
-                phone: document.getElementById('sellerPhone').value,
-                email: document.getElementById('sellerEmail').value
-            };
+          const allListings = JSON.parse(localStorage.getItem('carListings') || '[]');
+          const hasPriorApproval = allListings.some(car => 
+              car.sellerUsername === activeUsername.toLowerCase() && car.status === 'approved'
+          );
 
-            const allListings = JSON.parse(localStorage.getItem('carListings') || '[]');
-            allListings.push(finalData);
-            localStorage.setItem('carListings', JSON.stringify(allListings));
+          const finalStatus = hasPriorApproval ? 'approved' : 'pending';
 
-            alert("Success! Listing sent to Manager.");
-            this.reset();
-            document.getElementById('vehicleDetailsForm').reset();
-            sellerModal.classList.remove('open');
-        });
-    });
+          const finalData = {
+              ...tempVehicleData,
+              status: finalStatus, // Overwrite the initial 'pending' status
+              seller: fullName.toUpperCase(),
+              sellerUsername: activeUsername.toLowerCase(), 
+              phone: document.getElementById('sellerPhone').value,
+              email: document.getElementById('sellerEmail').value
+          };
+
+          allListings.push(finalData);
+          localStorage.setItem('carListings', JSON.stringify(allListings));
+
+          if (hasPriorApproval) {
+              const approvedListings = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+              approvedListings.push(finalData);
+              localStorage.setItem('approvedCars', JSON.stringify(approvedListings));
+              
+              alert("Welcome back! Your listing has been automatically approved and is now live.");
+              window.location.href = 'buyer.html';
+          } else {
+              alert("Success! Listing sent to Manager for first-time verification.");
+              this.reset();
+              document.getElementById('vehicleDetailsForm').reset();
+              sellerModal.classList.remove('open');
+          }
+      });
 </script>
 
 </body>

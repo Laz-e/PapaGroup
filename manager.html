@@ -229,6 +229,35 @@
             font-weight: bold; 
             text-transform: uppercase; 
         }
+        .management-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #5e616e;
+            font-weight: 600;
+        }
     </style>
 </head> 
 <body>
@@ -249,6 +278,28 @@
         <h1 class="page-title">Inventory Manager</h1>
         <div id="listingContainer"></div>
     </main>
+    
+    <div class="management-section" style="margin-top: 50px;">
+        <div class="table-header">
+            <h2>Registered Sellers</h2>
+        </div>
+        <div class="table-container">
+            <table id="sellerTable">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Contact Number</th>
+                        <th>Email Address</th>
+                        <th>Total Listings</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="sellerList">
+                    </tbody>
+            </table>
+        </div>
+    </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -324,7 +375,88 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
     `).join('');
         });
+window.onload = function() {
+        displayListings();
+        displaySellers();
+    };
 
+    // --- FUNCTION 1: MANAGE CAR LISTINGS ---
+    function displayListings() {
+        const listings = JSON.parse(localStorage.getItem('carListings') || '[]');
+        const tableBody = document.querySelector('tbody'); // Targets the first tbody in your file
+        tableBody.innerHTML = '';
+
+        listings.forEach((car, index) => {
+            const row = document.createElement('tr');
+            
+            // Set status color
+            let statusStyle = "color: orange; font-weight: bold;";
+            if (car.status === 'approved') statusStyle = "color: #2ecc71; font-weight: bold;";
+            if (car.status === 'SECURED') statusStyle = "color: #3498db; font-weight: bold;";
+
+            row.innerHTML = `
+                <td><img src="${car.image}" style="width:80px; border-radius:5px;"></td>
+                <td>${car.brand} ${car.model}</td>
+                <td>₱${Number(car.price).toLocaleString()}</td>
+                <td>${car.seller}</td>
+                <td style="${statusStyle}">${car.status.toUpperCase()}</td>
+                <td>
+                    ${car.status === 'pending' ? `<button onclick="approveListing(${index})" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Approve</button>` : ''}
+                    <button onclick="editListing(${index})" style="background:#f1c40f; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Edit</button>
+                    <button onclick="deleteListing(${index})" style="background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Delete</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // --- FUNCTION 2: MANAGE SELLER LIST ---
+    function displaySellers() {
+        const listings = JSON.parse(localStorage.getItem('carListings') || '[]');
+        const sellerListBody = document.getElementById('sellerList');
+        const sellers = {};
+
+        // Aggregate unique sellers from the listings
+        listings.forEach(car => {
+            const username = car.sellerUsername || 'unknown';
+            if (!sellers[username]) {
+                sellers[username] = {
+                    name: car.seller,
+                    username: username,
+                    phone: car.phone || 'N/A',
+                    email: car.email || 'N/A',
+                    count: 0
+                };
+            }
+            sellers[username].count++;
+        });
+
+        sellerListBody.innerHTML = '';
+
+        Object.values(sellers).forEach(seller => {
+            const isVerified = seller.count >= 2;
+            const statusText = isVerified ? "VERIFIED" : "UNVERIFIED";
+            const statusColor = isVerified ? "#2ecc71" : "#e67e22"; 
+
+            const row = `
+                <tr>
+                <td style="font-weight: 600;">${seller.name}</td>
+                <td>@${seller.username}</td>
+                <td>${seller.phone}</td>
+                <td>${seller.email}</td>
+                <td>
+                    <span style="background: #eee; padding: 4px 10px; border-radius: 20px; font-size: 0.9em;">
+                        ${seller.count} Listing(s)
+                    </span>
+                </td>
+                <td style="font-weight: bold; color: ${statusColor};">
+                    ${statusText}
+                </td>
+            </tr>
+            `;
+            sellerListBody.innerHTML += row;
+        });
+    }
         function approveListing(index) {
             let listings = JSON.parse(localStorage.getItem('carListings') || '[]');
             listings[index].status = 'approved';
