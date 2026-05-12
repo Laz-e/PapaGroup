@@ -263,6 +263,10 @@
             margin-top: 15px;
             height: 300px;
         }
+        .seller-info-box p strong + text, 
+        .seller-info-box p {
+            text-transform: uppercase;
+        }
 
         .seller-info-title {
             margin: 0 0 10px 0;
@@ -409,8 +413,10 @@
         7. FOOTER SECTION
         ========================================= */
         .footer-section {
-            /* Wrapper styling if needed */
             margin-top: 200px;
+            padding: 105px 0 20px; 
+            background: transparent;
+            
         }
 
         .footer-content {
@@ -684,25 +690,43 @@
             const userRole = sessionStorage.getItem('userRole');
             const activeUser = sessionStorage.getItem('activeUser');
 
-            if (userRole === 'guest') {
+            if (userRole === 'guest' || !activeUser || activeUser === 'Guest') {
                 closeVehicleModal();
-                document.getElementById('chatLoginModal').classList.add('open');
+                const chatLoginModal = document.getElementById('chatLoginModal');
+                if (chatLoginModal) {
+                    chatLoginModal.classList.add('open');
+                } else {
+                    alert("Please log in to secure a vehicle.");
+                    window.location.href = 'index.html';
+                }
                 return;
             }
 
             let approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
             let carListings = JSON.parse(localStorage.getItem('carListings') || '[]');
+            
             const securedCar = approvedCars[currentCarIndex];
 
-            if (!securedCar) return;
+            if (!securedCar) {
+                alert("Error: Vehicle not found.");
+                return;
+            }
 
-            if (securedCar.seller === activeUser) {
-                alert("You cannot secure a vehicle that you are currently selling.");
+            const currentLoggedInUser = activeUser.trim().toLowerCase();
+            const carOwner = (securedCar.seller || "").trim().toLowerCase();
+
+            console.log("Logged User:", currentLoggedInUser);
+            console.log("Car Owner:", carOwner);
+
+            if (currentLoggedInUser === carOwner) {
+                alert("Action Denied: You cannot purchase a vehicle that you listed yourself.");
                 closeVehicleModal();
                 return;
             }
 
-            if (!confirm("Are you sure you want to secure this vehicle? It will no longer be available to other buyers.")) return;
+            if (!confirm(`Are you sure you want to secure this ${securedCar.brand}? It will no longer be available to others.`)) {
+                return;
+            }
 
             approvedCars.splice(currentCarIndex, 1);
             localStorage.setItem('approvedCars', JSON.stringify(approvedCars));
@@ -715,14 +739,14 @@
 
             if (masterIndex !== -1) {
                 carListings[masterIndex].status = 'SECURED';
-                carListings[masterIndex].securedBy = activeUser || 'Unknown';
+                carListings[masterIndex].securedBy = activeUser;
                 carListings[masterIndex].securedAt = new Date().toLocaleDateString();
                 localStorage.setItem('carListings', JSON.stringify(carListings));
             }
 
+            // 7. FINALIZE
             closeVehicleModal();
-            alert(`You have successfully secured the ${securedCar.year} ${securedCar.brand} ${securedCar.model}!\n\nContact the seller to finalize the transaction.`);
-
+            alert(`Success! You have secured the ${securedCar.brand}.`);
             location.reload();
         }
 

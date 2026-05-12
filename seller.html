@@ -49,32 +49,32 @@
           <li class="benefit-item">
             <div class="icon icon-blue"><img src="pictures/gain.jpg" alt=""></div>
             <div class="benefit-text">
-              <h3>Reach More Buyers</h3>
-              <p>Reach far more buyers with CarVault's wide exposure.</p>
+              <h3>Find Your Car's Next Home</h3>
+              <p>We connect you with more people looking for exactly what you have.</p>
             </div>
           </li>
 
           <li class="benefit-item">
             <div class="icon icon-green"><img src="pictures/verified.jpg" alt=""></div>
             <div class="benefit-text">
-              <h3>Verified & Trusted</h3>
-              <p>All leads are verified via OTP for safe, real connections.</p>
+              <h3>Safety First:</h3>
+              <p>We handle the verification so you only talk to real, serious buyers.</p>
             </div>
           </li>
 
           <li class="benefit-item">
             <div class="icon icon-orange"><img src="pictures/free.jpg" alt=""></div>
             <div class="benefit-text">
-              <h3>Hassle-Free Selling</h3>
-              <p>Post your car in minutes & manage leads stress-free.</p>
+              <h3>Selling Made Simple:</h3>
+              <p>No stress, no long forms, just a quick post and you're live.</p>
             </div>
           </li>
 
           <li class="benefit-item">
             <div class="icon icon-pink"><img src="pictures/car.jpg" alt=""></div>
             <div class="benefit-text">
-              <h3>Best Car Price</h3>
-              <p>Instant online valuations – no guesswork, no haggling.</p>
+              <h3>No Lowballing</h3>
+              <p>Honest prices right from the start, so you don't have to haggle.</p>
             </div>
           </li>
         </ul>
@@ -560,6 +560,21 @@
                     status: 'pending',
                     dateListed: new Date().toLocaleDateString()
                 };
+                const activeUsername = sessionStorage.getItem('activeUser');
+                const rawData = localStorage.getItem(activeUsername);
+                
+                if (rawData) {
+                    const userStoredData = JSON.parse(rawData);
+                    
+                    const fName = userStoredData.firstName || "";
+                    const lName = userStoredData.lastName || "";
+                    document.getElementById('sellerName').value = (fName + " " + lName).trim();
+                    
+                    document.getElementById('sellerEmail').value = userStoredData.email || "";
+                    
+                    document.getElementById('sellerPhone').value = userStoredData.phone || "";
+                }
+
                 sellModal.classList.remove('open');
                 sellerModal.classList.add('open');
             };
@@ -573,9 +588,13 @@
 
         document.getElementById('sellerDetailsForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const activeUsername = sessionStorage.getItem('activeUser');
+            const userProfile = JSON.parse(localStorage.getItem(activeUsername) || '{}');
+            const fullName = `${userProfile.firstName || ''} ${userProfile.lastName || ''}`.trim() || activeUsername;
+
             const finalData = {
                 ...tempVehicleData,
-                seller: document.getElementById('sellerName').value,
+                seller: fullName.toUpperCase(),
                 phone: document.getElementById('sellerPhone').value,
                 email: document.getElementById('sellerEmail').value
             };
