@@ -491,7 +491,9 @@
 
       <div class="form-group">
           <label>Model</label>
-          <input type="text" id="carModel" placeholder="e.g. Vios, Hilux" required>
+          <select id="carModel" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+              <option value="" disabled selected>Select Model</option>
+          </select>
       </div>
 
       <div class="form-group">
@@ -650,8 +652,63 @@
             }
         });
 
-        // Hide Messages link for non-sellers
-      
+
+      const modelSelect = document.getElementById('carModel');
+
+        yearSelect.addEventListener('change', function() {
+            const selectedBrand = brandInput.value;
+            const selectedYear = this.value;
+
+            // Clear previous options
+            modelSelect.innerHTML = '<option value="" disabled selected>Select Model</option>';
+
+            if (carModelsData[selectedBrand] && carModelsData[selectedBrand][selectedYear]) {
+                const models = carModelsData[selectedBrand][selectedYear];
+                
+                models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                });
+            } else {
+                // Fallback if no specific data exists for that year/brand combination
+                const option = document.createElement('option');
+                option.value = "Other";
+                option.textContent = "Other / Not Listed";
+                modelSelect.appendChild(option);
+            }
+        });
+
+        const carModelsData = {
+            "Ford": {
+                "2007": ["Edge", "Everest", "Escape", "Explorer", "Focus", "Fusion", "Ranger", "Freestyle"],
+                "2008": ["Everest", "Expedition", "Focus", "Ranger"],
+                "2009": ["Everest", "Escape", "F-150", "Flex"],
+                "2010": ["Mustang", "Taurus", "Transit Connect"],
+                "2011": ["Explorer", "Fiesta", "Edge"],
+                "2012": ["Focus", "Escape", "Fusion"],
+                "2013": ["C-Max", "Explorer", "Taurus"],
+                "2014": ["Fiesta", "Mustang", "Transit"],
+                "2015": ["Edge", "Expedition", "F-150"],
+                "2016": ["Focus", "Fusion", "Ranger"],
+                "2017": ["Escape", "Explorer", "GT"],
+                "2018": ["EcoSport", "Expedition", "Flex"],
+                "2019": ["Bullitt", "Ranger", "Fiesta"],
+                "2020": ["Mustang Mach-E", "Explorer", "Escape"],
+                "2021": ["Bronco", "Bronco Sport", "F-150 Lightning"],
+                "2022": ["Maverick", "E-Transit", "Expedition"],
+                "2023": ["Super Duty", "Escape", "Mustang"],
+                "2024": ["Ranger Raptor", "Mustang Dark Horse", "F-150"],
+                "2025": ["Explorer EV", "Next-Gen Expedition", "Maverick Hybrid"],
+                "2026": ["Project T3 Truck", "Next-Gen Mustang", "Electric SUV Concept"]
+            },
+            "Honda": {
+                "2007": ["Civic", "CR-V", "City", "Jazz"],
+                "2008": ["Civic", "CR-V", "City", "Accord"],
+            }
+        };
+
         function populateYearDropdown(brand) {
         yearSelect.innerHTML = '<option value="" disabled selected>Select Year</option>';
         
@@ -701,7 +758,9 @@
             endYear = 2025;
         } else if (brand == 'Volvo') {
             startYear = 2011;
-        } 
+        } else if (brand == 'Ford') {
+          startYear = 2007;
+        }
 
         for (let i = endYear; i >= startYear; i--) {
             const option = document.createElement('option');
@@ -713,7 +772,6 @@
 
         brandCards.forEach(card => {
         card.addEventListener('click', () => {
-            // CHECK IF GUEST
             if (userRole === 'guest') {
                 loginRequiredModal.classList.add('open');
                 return;
@@ -722,7 +780,6 @@
             const brandName = card.getAttribute('data-brand');
             brandInput.value = brandName;
             
-            // Populate the year menu based on the selected brand
             populateYearDropdown(brandName);
             
             modalTitle.textContent = `Sell Your ${brandName}`;
@@ -755,7 +812,7 @@
                     variant: document.getElementById('carVariant').value,
                     mileage: document.getElementById('carMileage').value,
                     price: document.getElementById('carPrice').value,
-                    image: reader.result, // This is the Base64 string of the image
+                    image: reader.result, 
                     status: 'pending',
                     dateListed: new Date().toLocaleDateString()
                 };
@@ -764,7 +821,7 @@
             };
 
             if (imageFile) {
-                reader.readAsDataURL(imageFile); // Starts the conversion process
+                reader.readAsDataURL(imageFile); 
             } else {
                 alert("Please select a photo.");
             }
@@ -933,7 +990,6 @@
         return div.innerHTML;
     }
 
-    // Update unread badge every second
     setInterval(() => {
         const messages = JSON.parse(localStorage.getItem('carVaultMessages') || '[]');
         const activeUser = sessionStorage.getItem('activeUser');
