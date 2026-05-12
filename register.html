@@ -86,7 +86,7 @@
         <div class="brand-group">
             <h2>CarVault</h2>
             <div class="logo-container">
-                <img src="logo.png" alt="Logo">
+                <img src="pictures/logo.png" alt="Logo">
             </div>
         </div>
     </header>
@@ -111,6 +111,11 @@
              <div class="first-input input-field-group">
                 <input type="text" id="lname" name="lname" required>
                 <label for="lname">Last Name</label>
+            </div>
+
+            <div class="first-input input-field-group">
+                <input type="tel" id="phone" name="phone" pattern="[0-9]{11}"  required>
+                <label for="phone">Phone Number (11 digits)</label>
             </div>
 
               <div class="first-input input-field-group">
@@ -146,7 +151,10 @@
             const userData = {
                 username: usernameInput.value,
                 password: passwordInput.value,
-                email: document.getElementById('email').value
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                firstName: document.getElementById('fname').value, 
+                lastName: document.getElementById('lname').value
             };
 
             localStorage.setItem(userData.username, JSON.stringify(userData));
