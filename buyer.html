@@ -115,8 +115,8 @@
 
         .listing-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
         }
 
         .empty-msg {
@@ -128,52 +128,65 @@
         4. LISTING CARDS
         ========================================= */
         .listing-card {
-            background: white;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 28px; /* Classic Bento rounded corners */
             padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .listing-img {
             width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #0f0f0f;
+            aspect-ratio: 16 / 10; /* Maintains consistent shape across all photos */
+            object-fit: contain; /* Keeps the car proportions perfect */
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: none; /* Removed the old black border */
         }
 
-        .listing-title {
-            color: #1D2951;
-            margin: 0;
+        .listing-img {
+            width: 100%;
+            aspect-ratio: 16 / 10; /* Maintains consistent shape across all photos */
+            object-fit: contain; /* Keeps the car proportions perfect */
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: none; /* Removed the old black border */
         }
 
-        .listing-price {
-            font-size: 1.2rem;
-            color: #28a745;
-            font-weight: bold;
-            margin: 10px 0;
+        .listing-img {
+            width: 100%;
+            aspect-ratio: 16 / 10; /* Maintains consistent shape across all photos */
+            object-fit: contain; /* Keeps the car proportions perfect */
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: none; /* Removed the old black border */
         }
 
         .btn-group {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 12px;
         }
 
-        .contact-btn, .more-info-btn, .chat-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+        .contact-btn, .more-info-btn {
+            border-radius: 16px; /* Matching the bento style */
+            padding: 12px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
         }
 
         .contact-btn {
-            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
-            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            color: #1D2951;
         }
 
         .contact-btn:hover {
@@ -182,24 +195,14 @@
         }
 
         .more-info-btn {
-            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
-            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #1D2951;
         }
 
         .more-info-btn:hover {
             transform: scale(1.02);
             background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
-        }
-
-        .chat-btn {
-            background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
-            color: white;
-            flex: 1;
-        }
-
-        .chat-btn:hover {
-            transform: scale(1.02);
-            background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
         }
 
         /* =========================================
@@ -542,7 +545,7 @@
             const activeUser = sessionStorage.getItem('activeUser');
 
             if (!activeUser) {
-                window.location.href = 'index.html'; // Kick them back to login if no session exists
+                window.location.href = 'index.html'; 
                 return;
             }
             
@@ -688,7 +691,7 @@
 
         function handlePurchase() {
             const userRole = sessionStorage.getItem('userRole');
-            const activeUser = sessionStorage.getItem('activeUser');
+            const activeUser = sessionStorage.getItem('activeUser'); 
 
             if (userRole === 'guest' || !activeUser || activeUser === 'Guest') {
                 closeVehicleModal();
@@ -712,13 +715,10 @@
                 return;
             }
 
-            const currentLoggedInUser = activeUser.trim().toLowerCase();
-            const carOwner = (securedCar.seller || "").trim().toLowerCase();
+            const currentLoggedInUsername = activeUser.trim().toLowerCase();
+            const carOwnerUsername = (securedCar.sellerUsername || "").trim().toLowerCase();
 
-            console.log("Logged User:", currentLoggedInUser);
-            console.log("Car Owner:", carOwner);
-
-            if (currentLoggedInUser === carOwner) {
+            if (currentLoggedInUsername === carOwnerUsername) {
                 alert("Action Denied: You cannot purchase a vehicle that you listed yourself.");
                 closeVehicleModal();
                 return;
@@ -734,7 +734,7 @@
             const masterIndex = carListings.findIndex(car =>
                 car.brand === securedCar.brand &&
                 car.model === securedCar.model &&
-                car.seller === securedCar.seller
+                car.sellerUsername === securedCar.sellerUsername // Match by username for accuracy
             );
 
             if (masterIndex !== -1) {
@@ -744,7 +744,6 @@
                 localStorage.setItem('carListings', JSON.stringify(carListings));
             }
 
-            // 7. FINALIZE
             closeVehicleModal();
             alert(`Success! You have secured the ${securedCar.brand}.`);
             location.reload();

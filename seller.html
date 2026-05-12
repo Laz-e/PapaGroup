@@ -595,6 +595,7 @@
             const finalData = {
                 ...tempVehicleData,
                 seller: fullName.toUpperCase(),
+                sellerUsername: activeUsername.toLowerCase(), 
                 phone: document.getElementById('sellerPhone').value,
                 email: document.getElementById('sellerEmail').value
             };
