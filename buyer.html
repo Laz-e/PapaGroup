@@ -261,6 +261,7 @@
             padding: 15px;
             border-radius: 8px;
             margin-top: 15px;
+            height: 300px;
         }
 
         .seller-info-title {
@@ -270,8 +271,8 @@
         }
 
         .contact-link {
-            display: inline-block;
-            margin: 8px 5px 8px 0;
+            display: block;
+            margin: 15px 5px 8px 0;
             padding: 10px 15px;
             border-radius: 6px;
             text-decoration: none;
@@ -531,9 +532,6 @@
     <script>
         let currentCarIndex = null;
 
-        // ============================================
-        // MAIN BUYER PAGE FUNCTIONALITY
-        // ============================================
         document.addEventListener('DOMContentLoaded', () => {
             const activeUser = sessionStorage.getItem('activeUser');
 
@@ -597,6 +595,42 @@
             }).join('');
         });
 
+        const secureBtn = document.querySelector('.purchase-btn'); 
+        const userRole = sessionStorage.getItem('userRole');
+
+        if (userRole === 'guest' || !userRole) {
+            secureBtn.style.display = 'none'; 
+        } else {
+            secureBtn.style.display = 'block';
+        }
+        function openContactModal(index) {
+            const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+            const car = approvedCars[index];
+
+            document.getElementById('contactModalBody').innerHTML = `
+                <div class="seller-info-box">
+                    <p><strong>Name:</strong> ${car.seller || 'N/A'}</p>
+                    <p style="margin-top: 10px;"><strong>Contact Methods:</strong></p>
+                    
+                    <div style="margin-top: 10px; height: 1px; background: #ddd; "></div>
+                        <a href="tel:${car.phone}" class="contact-link phone-link" title="Call seller">
+                            <i class="fas fa-phone"></i> Call: ${car.phone}
+                        </a>
+                        <a href="sms:${car.phone}" class="contact-link sms-link" title="Send SMS">
+                            <i class="fas fa-comments"></i> Text: ${car.phone}
+                        </a>
+                        <a href="mailto:${car.email}" class="contact-link email-link" title="Send Email">
+                            <i class="fas fa-envelope"></i> Email
+                        </a>
+                    </div>
+                </div>
+            `;
+            document.getElementById('contactModal').classList.add('open');
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.remove('open');
+        }
         // ============================================
         // VEHICLE DETAILS MODAL FUNCTIONS
         // ============================================
