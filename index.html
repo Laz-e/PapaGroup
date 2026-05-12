@@ -63,69 +63,98 @@
 
 
    <script>
-        const loginForm = document.getElementById('loginForm');
-        const usernameInput = document.getElementById('username');
-        const passwordInput = document.getElementById('password');
-        const togglePassword = document.getElementById('togglePassword');
-        const guestLink = document.querySelector('a[href="frontpage.html"]');
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    const guestLink = document.querySelector('a[href="frontpage.html"]');
+    const rememberMeCheckbox = document.querySelector('input[name="remember"]');
 
-        togglePassword.textContent = '👁️'; 
-        togglePassword.addEventListener('click', function () {
+    // 1. AUTO-FILL ON PAGE LOAD
+    window.addEventListener('load', () => {
+        const savedData = JSON.parse(localStorage.getItem('rememberedUser'));
+        if (savedData) {
+            usernameInput.value = savedData.identity;
+            passwordInput.value = savedData.pass;
+            rememberMeCheckbox.checked = true;
+        }
+    });
+
+    // Toggle Password Visibility
+    togglePassword.textContent = '👁️'; 
+    togglePassword.addEventListener('click', function () {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
         this.textContent = type === 'password' ? '👁️' : '🙈';
-        });
+    });
 
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-            const submitBtn = this.querySelector('button');
-            const originalText = submitBtn.textContent;
+        const submitBtn = this.querySelector('button');
+        const originalText = submitBtn.textContent;
 
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging In...';
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging In...';
 
-            setTimeout(() => {
-                const enteredUser = usernameInput.value;
-                const enteredPass = passwordInput.value;
+        setTimeout(() => {
+            const enteredIdentity = usernameInput.value.toLowerCase();
+            const enteredPass = passwordInput.value;
 
-                // MANAGER LOGIN
-                if (enteredUser === "admin" && enteredPass === "manager123") {
-                    sessionStorage.setItem('userRole', 'manager');
-                    sessionStorage.setItem('activeUser', 'Manager');
-                    window.location.href = 'manager.html'; // Redirect to manager dashboard
-                    return;
-                }
-
-                // USERS
-                const storedData = localStorage.getItem(enteredUser);
-
-                if (storedData) {
-                    const user = JSON.parse(storedData);
-                    if (user.password === enteredPass) {
-                        sessionStorage.setItem('userRole', 'user');
-                        sessionStorage.setItem('activeUser', user.username); 
-                        window.location.href = 'frontpage.html';
-                    } else {
-                        alert("Incorrect password.");
-                        resetButton();
-                    }
-                } else {
-                    alert("Username not found.");
-                    resetButton();
-                }
-            }, 1000);
-
-            function resetButton() {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
+            // 2. MANAGER LOGIN
+            if (enteredIdentity === "admin" && enteredPass === "manager123") {
+                sessionStorage.setItem('userRole', 'manager');
+                sessionStorage.setItem('activeUser', 'Manager');
+                window.location.href = 'manager.html';
+                return;
             }
-        });
 
-        guestLink.addEventListener('click', function(e) {
-            sessionStorage.setItem('userRole', 'guest');
-            sessionStorage.setItem('activeUser', 'Guest'); // Good for "Welcome, Guest" headers
-        });
+            // 3. SEARCH USERS
+            let foundUser = null;
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                try {
+                    const user = JSON.parse(localStorage.getItem(key));
+                    if (user.username.toLowerCase() === enteredIdentity || 
+                        (user.email && user.email.toLowerCase() === enteredIdentity)) {
+                        foundUser = user;
+                        break;
+                    }
+                } catch (e) { continue; }
+            }
+
+            // 4. VALIDATE & HANDLE REMEMBER ME
+            if (foundUser && foundUser.password === enteredPass) {
+                
+                // SAVE OR REMOVE "REMEMBER ME" DATA
+                if (rememberMeCheckbox.checked) {
+                    localStorage.setItem('rememberedUser', JSON.stringify({
+                        identity: usernameInput.value, 
+                        pass: enteredPass
+                    }));
+                } else {
+                    localStorage.removeItem('rememberedUser');
+                }
+
+                sessionStorage.setItem('userRole', 'user');
+                sessionStorage.setItem('activeUser', foundUser.username); 
+                window.location.href = 'frontpage.html';
+            } else {
+                alert(foundUser ? "Incorrect password." : "Account not found.");
+                resetButton();
+            }
+        }, 1000);
+
+        function resetButton() {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    });
+
+    guestLink.addEventListener('click', function(e) {
+        sessionStorage.setItem('userRole', 'guest');
+        sessionStorage.setItem('activeUser', 'Guest');
+    });
 </script>
 </body>
 </html>
