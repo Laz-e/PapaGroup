@@ -134,34 +134,46 @@
     </div>
 
     <script>
-        const registerForm = document.getElementById('registerForm');
-        const passwordInput = document.getElementById('password');
-        const usernameInput = document.getElementById('username');
-        const togglePassword = document.getElementById('togglePassword');
+    const registerForm = document.getElementById('registerForm');
+    const passwordInput = document.getElementById('password');
+    const usernameInput = document.getElementById('username');
 
-        togglePassword.addEventListener('click', function () {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.textContent = type === 'password' ? '👁️' : '🙈';
-        });
+    registerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-        registerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+        const newUsername = usernameInput.value.trim();
+        const enteredEmail = document.getElementById('email').value.trim().toLowerCase();
+        const enteredPhone = document.getElementById('phone').value.trim();
 
-            const userData = {
-                username: usernameInput.value,
-                password: passwordInput.value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                firstName: document.getElementById('fname').value, 
-                lastName: document.getElementById('lname').value
-            };
+        if (localStorage.getItem(newUsername)) {
+            alert("Username already taken.");
+            return;
+        }
 
-            localStorage.setItem(userData.username, JSON.stringify(userData));
+        const listings = JSON.parse(localStorage.getItem('carListings') || '[]');
+        const contactExists = listings.some(car => 
+            car.email.toLowerCase() === enteredEmail && car.phone === enteredPhone
+        );
 
-            alert("Account created successfully!");
-            window.location.href = 'index.html';
-        });
-    </script>
+        if (!contactExists) {
+            alert("Registration failed: Email or Phone number already exists");
+            return;
+        }
+
+        const userData = {
+            username: newUsername,
+            password: passwordInput.value,
+            email: enteredEmail,
+            phone: enteredPhone,
+            firstName: document.getElementById('fname').value, 
+            lastName: document.getElementById('lname').value
+        };
+
+        localStorage.setItem(newUsername, JSON.stringify(userData));
+        alert("Account created successfully!");
+        window.location.href = 'index.html';
+    });
+    
+</script>
 </body>
 </html>
