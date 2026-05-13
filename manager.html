@@ -246,12 +246,14 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            table-layout: auto;
         }
 
         th, td {
             padding: 10px;
             text-align: left;
             border-bottom: 1px solid #eee;
+            white-space: nowrap; /
         }
 
         th {
@@ -387,9 +389,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             
             <div class="action-buttons">
-                ${car.status !== 'approved' ? 
-                    `<button onclick="approveListing(${index})" class="btn approve-btn">Approve</button>` : 
-                    `<button disabled class="btn disabled-btn">Already Approved</button>`
+                ${car.status === 'SECURED' ? 
+                    `<button disabled class="btn secured-btn" style="background-color: #6c757d; cursor: not-allowed;">Secured</button>` :
+                car.status === 'approved' ? 
+                    `<button disabled class="btn disabled-btn">Already Approved</button>` : 
+                    `<button onclick="approveListing(${index})" class="btn approve-btn">Approve</button>`
                 }
                 <button onclick="editListing(${index})" class="btn edit-btn">Edit</button>
                 <button onclick="deleteListing(${index})" class="btn delete-btn">Delete</button>
@@ -485,7 +489,7 @@ window.onload = function() {
             const securedListings = listings.filter(car => car.status === 'SECURED');
 
             if (securedListings.length === 0) {
-                buyerListBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No buyer has secured any vehicles.</td></tr>';
+                buyerListBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No buyer has secured any vehicles.</td></tr>';
                 return;
             }
 
@@ -493,16 +497,16 @@ window.onload = function() {
 
                 const buyerAccount = JSON.parse(localStorage.getItem(car.securedBy) || '{}');
                 const buyerFullName = buyerAccount.firstName ? `${buyerAccount.firstName} ${buyerAccount.lastName}` : "Unknown Buyer";
-                const buyerPhone = buyerAccount.phone || "N/A";
+                const displayPhone = car.buyerPhone || buyerAccount.phone || "N/A";
 
                 return `
                     <tr>
                         <td style="font-weight: 600;">${buyerFullName}</td>
                         <td><span style="color: #3498db;">@${car.securedBy}</span></td>
                         <td>${buyerPhone}</td>
-                        <td>₱${Number(car.price).toLocaleString()}</td>
                         <td>@${car.sellerUsername}</td>
                         <td>${car.year} ${car.brand} ${car.model}</td>
+                        <td>₱${Number(car.price).toLocaleString()}</td>
                         <td>${car.securedAt || 'N/A'}</td>
                     </tr>
                 `;

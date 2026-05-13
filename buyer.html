@@ -510,7 +510,7 @@
             <span onclick="closeVehicleModal()" class="close-icon">&times;</span>
             <h2 class="modal-header">Vehicle Details</h2>
             <div id="vehicleModalBody"></div>
-            <button onclick="handlePurchase()" class="purchase-btn">
+            <button onclick="secureCar()" class="purchase-btn">
                 Secure This Vehicle
             </button>
         </div>
@@ -538,6 +538,29 @@
     </footer>
     </div>
 
+    <div id="buyerConfirmModal" class="logo-modal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(5px); align-items: center; justify-content: center;">
+    <div class="modal-content" style="background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 450px; position: relative;">
+        <span class="close-buyer-confirm" style="position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer;">&times;</span>
+        <h2 style="color: #1D2951; margin-bottom: 10px;">Confirm Purchase</h2>
+        <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">Please review the vehicle details and your contact info to secure this car.</p>
+        
+        <div id="buyerVehicleSummary" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #28a745;">
+            </div>
+
+        <form id="buyerConfirmForm">
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Full Name</label>
+                <input type="text" id="buyerFullName" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Phone Number</label>
+                <input type="tel" id="buyerPhone" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+            <button type="submit" style="width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Confirm & Secure Vehicle</button>
+        </form>
+    </div>
+</div>
+
     <script>
         let currentCarIndex = null;
 
@@ -553,6 +576,10 @@
             const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
             const userRole = sessionStorage.getItem('userRole');
             const logoutLink = document.querySelector('.logout-link');
+            const buyerConfirmModal = document.getElementById('buyerConfirmModal');
+            const buyerConfirmForm = document.getElementById('buyerConfirmForm');
+            const closeBuyerConfirm = document.querySelector('.close-buyer-confirm');
+            let carToSecure = null;
 
             if (userRole === 'guest') {
                 logoutLink.textContent = 'Sign In';
@@ -604,14 +631,6 @@
             }).join('');
         });
 
-        const secureBtn = document.querySelector('.purchase-btn'); 
-        const userRole = sessionStorage.getItem('userRole');
-
-        if (userRole === 'guest' || !userRole) {
-            secureBtn.style.display = 'none'; 
-        } else {
-            secureBtn.style.display = 'block';
-        }
         function openContactModal(index) {
             const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
             const car = approvedCars[index];
@@ -647,6 +666,7 @@
             const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
             const car = approvedCars[index];
             currentCarIndex = index;
+            const userRole = sessionStorage.getItem('userRole');
 
             document.getElementById('vehicleModalBody').innerHTML = `
                 ${car.image ? `<img src="${car.image}" alt="Vehicle Image">` : ''}
@@ -682,6 +702,13 @@
                     <p style="margin: 0; color: black;"><strong>Price:</strong> ₱${Number(car.price).toLocaleString()}</p>
                 </div>
             `;
+            const purchaseBtn = document.querySelector('.purchase-btn');
+                if (userRole === 'guest' || !userRole) {
+                    purchaseBtn.style.display = 'none';
+                } else {
+                    purchaseBtn.style.display = 'block';
+                }
+
             document.getElementById('vehicleModal').classList.add('open');
         }
 
@@ -689,65 +716,7 @@
             document.getElementById('vehicleModal').classList.remove('open');
         }
 
-        function handlePurchase() {
-            const userRole = sessionStorage.getItem('userRole');
-            const activeUser = sessionStorage.getItem('activeUser'); 
-
-            if (userRole === 'guest' || !activeUser || activeUser === 'Guest') {
-                closeVehicleModal();
-                const chatLoginModal = document.getElementById('chatLoginModal');
-                if (chatLoginModal) {
-                    chatLoginModal.classList.add('open');
-                } else {
-                    alert("Please log in to secure a vehicle.");
-                    window.location.href = 'index.html';
-                }
-                return;
-            }
-
-            let approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
-            let carListings = JSON.parse(localStorage.getItem('carListings') || '[]');
-            
-            const securedCar = approvedCars[currentCarIndex];
-
-            if (!securedCar) {
-                alert("Error: Vehicle not found.");
-                return;
-            }
-
-            const currentLoggedInUsername = activeUser.trim().toLowerCase();
-            const carOwnerUsername = (securedCar.sellerUsername || "").trim().toLowerCase();
-
-            if (currentLoggedInUsername === carOwnerUsername) {
-                alert("Action Denied: You cannot purchase a vehicle that you listed yourself.");
-                closeVehicleModal();
-                return;
-            }
-
-            if (!confirm(`Are you sure you want to secure this ${securedCar.brand}? It will no longer be available to others.`)) {
-                return;
-            }
-
-            approvedCars.splice(currentCarIndex, 1);
-            localStorage.setItem('approvedCars', JSON.stringify(approvedCars));
-
-            const masterIndex = carListings.findIndex(car =>
-                car.brand === securedCar.brand &&
-                car.model === securedCar.model &&
-                car.sellerUsername === securedCar.sellerUsername // Match by username for accuracy
-            );
-
-            if (masterIndex !== -1) {
-                carListings[masterIndex].status = 'SECURED';
-                carListings[masterIndex].securedBy = activeUser;
-                carListings[masterIndex].securedAt = new Date().toLocaleDateString();
-                localStorage.setItem('carListings', JSON.stringify(carListings));
-            }
-
-            closeVehicleModal();
-            alert(`Success! You have secured the ${securedCar.brand}.`);
-            location.reload();
-        }
+        
 
         window.addEventListener('click', (e) => {
             const contactModal = document.getElementById('contactModal');
@@ -761,6 +730,69 @@
             }
 
         });
-    </script>
+
+        const buyerConfirmModal = document.getElementById('buyerConfirmModal');
+        const buyerConfirmForm = document.getElementById('buyerConfirmForm');
+        const closeBuyerConfirm = document.querySelector('.close-buyer-confirm');
+        let carToSecure = null; // Temporary storage para sa napiling sasakyan
+
+            function secureCar() {
+                const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+                const activeUser = sessionStorage.getItem('activeUser');
+
+                if (activeUser === 'Guest') {
+                        alert("Please log in to secure a vehicle.");
+                        return;
+                }
+
+                carToSecure = approvedCars[currentCarIndex];
+
+                document.getElementById('buyerVehicleSummary').innerHTML = `
+                    <strong>Vehicle:</strong> ${carToSecure.brand} ${carToSecure.model} (${carToSecure.year})<br>
+                    <strong>Price:</strong> ₱${Number(carToSecure.price).toLocaleString()}
+                `;
+
+                const userData = JSON.parse(localStorage.getItem(activeUser) || '{}');
+               const firstName = userData.firstName || "";
+                const lastName = userData.lastName || "";
+                const fullName = (firstName + " " + lastName).trim();
+                document.getElementById('buyerFullName').value = fullName || activeUser; 
+                document.getElementById('buyerPhone').value = userData.phone || "";
+
+            closeVehicleModal();
+            buyerConfirmModal.style.display = 'flex';
+        }
+
+        buyerConfirmForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const buyerName = document.getElementById('buyerFullName').value;
+            const buyerPhone = document.getElementById('buyerPhone').value;
+
+            let carListings = JSON.parse(localStorage.getItem('carListings') || '[]');
+
+            const masterIndex = carListings.findIndex(car =>
+                car.brand === carToSecure.brand &&
+                car.model === carToSecure.model &&
+                car.price === carToSecure.price &&
+                car.sellerUsername === carToSecure.sellerUsername
+            );
+
+            if (masterIndex !== -1) {
+                carListings[masterIndex].status = 'SECURED';
+                carListings[masterIndex].securedBy = buyerName;
+                carListings[masterIndex].buyerPhone = buyerPhone;
+                localStorage.setItem('carListings', JSON.stringify(carListings));
+
+                const updatedApproved = carListings.filter(car => car.status === 'approved');
+                localStorage.setItem('approvedCars', JSON.stringify(updatedApproved));
+
+                alert(`Success! You have secured the ${carToSecure.brand}. The seller will contact you soon.`);
+                location.reload();
+            }
+        });
+
+        closeBuyerConfirm.onclick = () => buyerConfirmModal.style.display = 'none';
+</script>
 </body>
 </html>
