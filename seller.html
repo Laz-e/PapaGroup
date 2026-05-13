@@ -246,7 +246,7 @@
   </footer>
 </div>
 
-  <div id="sellModal" class="logo-modal">
+  <div id="sellerModal" class="logo-modal">
   <div class="modal-content">
     <span class="close-sell">&times;</span>
     <h2 id="modalTitle" style="color: var(--nav-blue);">Sell Your Vehicle</h2>
@@ -329,6 +329,11 @@
           <input type="email" id="sellerEmail" placeholder="juan@example.com" required>
       </div>
 
+      <div class="form-group">
+        <label for="sellerCity">City</label>
+        <input type="text" id="sellerCity" name="sellerCity" placeholder="e.g. Cavite City" required>
+    </div>
+
       <button type="submit" class="submit-btn" style="width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px;">Confirm & Post Listing</button>
     </form>
   </div>
@@ -357,7 +362,7 @@
 <script>
         document.addEventListener('DOMContentLoaded', () => {
         const brandCards = document.querySelectorAll('.brand-card');
-        const sellModal = document.getElementById('sellModal');
+        const sellModal = document.getElementById('sellerModal');
         const sellerModal = document.getElementById('sellerInfoModal');
         const loginRequiredModal = document.getElementById('loginRequiredModal');
         const yearSelect = document.getElementById('carYear');
@@ -460,28 +465,27 @@
         }
 
         brandCards.forEach(card => {
-        card.addEventListener('click', () => {
-            if (userRole === 'guest') {
-                loginRequiredModal.classList.add('open');
-                return;
-            }
+          card.addEventListener('click', () => {
+              if (userRole === 'guest') {
+                  loginRequiredModal.classList.add('open');
+                  return;
+              }
 
-            const brandName = card.getAttribute('data-brand');
-            brandInput.value = brandName;
-            
-            populateYearDropdown(brandName);
-            
-            modalTitle.textContent = `Sell Your ${brandName}`;
-            sellModal.classList.add('open');
-            });
-        });
+              const brandName = card.getAttribute('data-brand');
+              brandInput.value = brandName;
+              
+              populateYearDropdown(brandName);
+              
+              modalTitle.textContent = `Sell Your ${brandName}`;
 
+              sellModal.classList.add('open'); 
+          });
+      });
 
         yearSelect.addEventListener('change', function() {
             const selectedBrand = brandInput.value;
             const selectedYear = this.value;
 
-            // Clear previous options
             modelSelect.innerHTML = '<option value="" disabled selected>Select Model</option>';
 
             if (carModelsData[selectedBrand] && carModelsData[selectedBrand][selectedYear]) {
@@ -494,7 +498,7 @@
                     modelSelect.appendChild(option);
                 });
             } else {
-                // Fallback if no specific data exists for that year/brand combination
+
                 const option = document.createElement('option');
                 option.value = "Other";
                 option.textContent = "Other / Not Listed";
@@ -601,11 +605,12 @@
 
           const finalData = {
               ...tempVehicleData,
-              status: finalStatus, // Overwrite the initial 'pending' status
+              status: finalStatus, 
               seller: fullName.toUpperCase(),
               sellerUsername: activeUsername.toLowerCase(), 
               phone: document.getElementById('sellerPhone').value,
-              email: document.getElementById('sellerEmail').value
+              email: document.getElementById('sellerEmail').value,
+              city: document.getElementById('sellerCity').value
           };
 
           allListings.push(finalData);
@@ -625,7 +630,7 @@
               sellerModal.classList.remove('open');
           }
       });
+    });
 </script>
-
 </body>
 </html>
