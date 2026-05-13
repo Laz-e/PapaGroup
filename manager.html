@@ -290,7 +290,7 @@
                     <tr>
                         <th>Full Name</th>
                         <th>Username</th>
-                        <th>Contact Number</th>
+                        <th>City</th> <th>Phone</th>
                         <th>Email Address</th>
                         <th>Total Listings</th>
                         <th>Status</th>
@@ -312,9 +312,10 @@
                     <tr>
                         <th>Full Name</th>
                         <th>Username</th>
-                        <th>Price</th>
+                        <th>Phone</th>
                         <th>Seller Username</th>
                         <th>Vehicle Bought</th>
+                        <th>Price</th>
                         <th>Date Secured</th>
                     </tr>
                 </thead>
@@ -346,10 +347,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault(); 
-            
             sessionStorage.removeItem('userRole');
             sessionStorage.removeItem('activeUser');
-            
             alert("Logging out from Manager Dashboard...");
             window.location.href = 'index.html'; 
         });
@@ -437,13 +436,13 @@ window.onload = function() {
         const sellerListBody = document.getElementById('sellerList');
         const sellers = {};
 
-        // Aggregate unique sellers from the listings
         listings.forEach(car => {
             const username = car.sellerUsername || 'unknown';
             if (!sellers[username]) {
                 sellers[username] = {
                     name: car.seller,
                     username: username,
+                    city: car.city || 'N/A',
                     phone: car.phone || 'N/A',
                     email: car.email || 'N/A',
                     count: 0
@@ -463,7 +462,7 @@ window.onload = function() {
                 <tr>
                 <td style="font-weight: 600;">${seller.name}</td>
                 <td>@${seller.username}</td>
-                <td>${seller.phone}</td>
+                <td>${seller.city}</td> <td>${seller.phone}</td>
                 <td>${seller.email}</td>
                 <td>
                     <span style="background: #eee; padding: 4px 10px; border-radius: 20px; font-size: 0.9em;">
@@ -483,7 +482,6 @@ window.onload = function() {
             const listings = JSON.parse(localStorage.getItem('carListings') || '[]');
             const buyerListBody = document.getElementById('buyerList');
             
-            // Filter only for cars that have been secured by a buyer
             const securedListings = listings.filter(car => car.status === 'SECURED');
 
             if (securedListings.length === 0) {
@@ -495,11 +493,13 @@ window.onload = function() {
 
                 const buyerAccount = JSON.parse(localStorage.getItem(car.securedBy) || '{}');
                 const buyerFullName = buyerAccount.firstName ? `${buyerAccount.firstName} ${buyerAccount.lastName}` : "Unknown Buyer";
+                const buyerPhone = buyerAccount.phone || "N/A";
 
                 return `
                     <tr>
                         <td style="font-weight: 600;">${buyerFullName}</td>
                         <td><span style="color: #3498db;">@${car.securedBy}</span></td>
+                        <td>${buyerPhone}</td>
                         <td>₱${Number(car.price).toLocaleString()}</td>
                         <td>@${car.sellerUsername}</td>
                         <td>${car.year} ${car.brand} ${car.model}</td>
