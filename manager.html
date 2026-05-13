@@ -239,6 +239,7 @@
 
         .table-container {
             overflow-x: auto;
+            
         }
 
         table {
@@ -248,7 +249,7 @@
         }
 
         th, td {
-            padding: 15px;
+            padding: 10px;
             text-align: left;
             border-bottom: 1px solid #eee;
         }
@@ -296,6 +297,28 @@
                     </tr>
                 </thead>
                 <tbody id="sellerList">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="management-section" style="margin-top: 50px;">
+        <div class="table-header">
+            <h2>Registered Buyers</h2>
+        </div>
+        <div class="table-container">
+            <table id="buyerTable">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Price</th>
+                        <th>Seller Username</th>
+                        <th>Vehicle Bought</th>
+                        <th>Date Secured</th>
+                    </tr>
+                </thead>
+                <tbody id="buyerList">
                     </tbody>
             </table>
         </div>
@@ -378,18 +401,17 @@ document.addEventListener('DOMContentLoaded', () => {
 window.onload = function() {
         displayListings();
         displaySellers();
+        displayBuyerTracking();
     };
 
-    // --- FUNCTION 1: MANAGE CAR LISTINGS ---
     function displayListings() {
         const listings = JSON.parse(localStorage.getItem('carListings') || '[]');
-        const tableBody = document.querySelector('tbody'); // Targets the first tbody in your file
+        const tableBody = document.querySelector('tbody'); 
         tableBody.innerHTML = '';
 
         listings.forEach((car, index) => {
             const row = document.createElement('tr');
             
-            // Set status color
             let statusStyle = "color: orange; font-weight: bold;";
             if (car.status === 'approved') statusStyle = "color: #2ecc71; font-weight: bold;";
             if (car.status === 'SECURED') statusStyle = "color: #3498db; font-weight: bold;";
@@ -410,7 +432,6 @@ window.onload = function() {
         });
     }
 
-    // --- FUNCTION 2: MANAGE SELLER LIST ---
     function displaySellers() {
         const listings = JSON.parse(localStorage.getItem('carListings') || '[]');
         const sellerListBody = document.getElementById('sellerList');
@@ -457,6 +478,37 @@ window.onload = function() {
             sellerListBody.innerHTML += row;
         });
     }
+
+        function displayBuyerTracking() {
+            const listings = JSON.parse(localStorage.getItem('carListings') || '[]');
+            const buyerListBody = document.getElementById('buyerList');
+            
+            // Filter only for cars that have been secured by a buyer
+            const securedListings = listings.filter(car => car.status === 'SECURED');
+
+            if (securedListings.length === 0) {
+                buyerListBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No buyer has secured any vehicles.</td></tr>';
+                return;
+            }
+
+            buyerListBody.innerHTML = securedListings.map(car => {
+
+                const buyerAccount = JSON.parse(localStorage.getItem(car.securedBy) || '{}');
+                const buyerFullName = buyerAccount.firstName ? `${buyerAccount.firstName} ${buyerAccount.lastName}` : "Unknown Buyer";
+
+                return `
+                    <tr>
+                        <td style="font-weight: 600;">${buyerFullName}</td>
+                        <td><span style="color: #3498db;">@${car.securedBy}</span></td>
+                        <td>₱${Number(car.price).toLocaleString()}</td>
+                        <td>@${car.sellerUsername}</td>
+                        <td>${car.year} ${car.brand} ${car.model}</td>
+                        <td>${car.securedAt || 'N/A'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
         function approveListing(index) {
             let listings = JSON.parse(localStorage.getItem('carListings') || '[]');
             listings[index].status = 'approved';
