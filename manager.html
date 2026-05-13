@@ -489,21 +489,20 @@ window.onload = function() {
             const securedListings = listings.filter(car => car.status === 'SECURED');
 
             if (securedListings.length === 0) {
-                buyerListBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No buyer has secured any vehicles.</td></tr>';
+                buyerListBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No buyer transactions found.</td></tr>';
                 return;
             }
 
             buyerListBody.innerHTML = securedListings.map(car => {
-
+                // Fallback logic: Use buyerName from transaction, then profile, then username
                 const buyerAccount = JSON.parse(localStorage.getItem(car.securedBy) || '{}');
-                const buyerFullName = buyerAccount.firstName ? `${buyerAccount.firstName} ${buyerAccount.lastName}` : "Unknown Buyer";
-                const displayPhone = car.buyerPhone || buyerAccount.phone || "N/A";
+                const displayName = car.buyerName || (buyerAccount.firstName ? `${buyerAccount.firstName} ${buyerAccount.lastName}` : car.securedBy);
 
                 return `
                     <tr>
-                        <td style="font-weight: 600;">${buyerFullName}</td>
+                        <td><strong>${displayName}</strong></td>
                         <td><span style="color: #3498db;">@${car.securedBy}</span></td>
-                        <td>${buyerPhone}</td>
+                        <td>${car.buyerPhone || buyerAccount.phone || 'N/A'}</td>
                         <td>@${car.sellerUsername}</td>
                         <td>${car.year} ${car.brand} ${car.model}</td>
                         <td>₱${Number(car.price).toLocaleString()}</td>
@@ -520,7 +519,6 @@ window.onload = function() {
             approvedListings.push(listings[index]);
             localStorage.setItem('carListings', JSON.stringify(listings));
             localStorage.setItem('approvedCars', JSON.stringify(approvedListings));
-            alert("Listing Approved! It remains in your panel and is now visible to buyers.");
             location.reload(); 
         }
 
@@ -531,7 +529,6 @@ window.onload = function() {
                 localStorage.setItem('carListings', JSON.stringify(listings));
                 const approvedOnly = listings.filter(car => car.status === 'approved');
                 localStorage.setItem('approvedCars', JSON.stringify(approvedOnly));
-                alert("Listing deleted successfully from both Manager and Buyer panels.");
                 location.reload(); 
             }
         }
@@ -546,7 +543,6 @@ window.onload = function() {
                 localStorage.setItem('carListings', JSON.stringify(listings));
                 const approvedOnly = listings.filter(c => c.status === 'approved');
                 localStorage.setItem('approvedCars', JSON.stringify(approvedOnly));
-                alert("Listing updated successfully on all panels!");
                 location.reload();
             }
         }

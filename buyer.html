@@ -746,6 +746,14 @@
                 }
 
                 carToSecure = approvedCars[currentCarIndex];
+                const currentLoggedInUser = activeUser.trim().toLowerCase();
+                const carOwner = (carToSecure.sellerUsername || "").trim().toLowerCase();
+
+                if (currentLoggedInUser === carOwner) {
+                    alert("Action Denied: You cannot purchase a vehicle that you posted yourself.");
+                    closeVehicleModal(); // Close the info modal
+                    return;
+                }
 
                 document.getElementById('buyerVehicleSummary').innerHTML = `
                     <strong>Vehicle:</strong> ${carToSecure.brand} ${carToSecure.model} (${carToSecure.year})<br>
@@ -768,6 +776,7 @@
 
             const buyerName = document.getElementById('buyerFullName').value;
             const buyerPhone = document.getElementById('buyerPhone').value;
+            const activeUsername = sessionStorage.getItem('activeUser'); 
 
             let carListings = JSON.parse(localStorage.getItem('carListings') || '[]');
 
@@ -780,8 +789,12 @@
 
             if (masterIndex !== -1) {
                 carListings[masterIndex].status = 'SECURED';
-                carListings[masterIndex].securedBy = buyerName;
+                carListings[masterIndex].securedBy = activeUsername;
+                carListings[masterIndex].buyerName = buyerName;
                 carListings[masterIndex].buyerPhone = buyerPhone;
+                carListings[masterIndex].sellerUsername = carToSecure.sellerUsername; 
+                carListings[masterIndex].securedAt = new Date().toLocaleString();
+        
                 localStorage.setItem('carListings', JSON.stringify(carListings));
 
                 const updatedApproved = carListings.filter(car => car.status === 'approved');
