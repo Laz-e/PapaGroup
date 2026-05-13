@@ -151,11 +151,19 @@
         }
 
         const listings = JSON.parse(localStorage.getItem('carListings') || '[]');
-        const contactExists = listings.some(car => 
-            car.email.toLowerCase() === enteredEmail && car.phone === enteredPhone
-        );
+        let contactExists = false;
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                try {
+                    const user = JSON.parse(localStorage.getItem(key));
+                    if (user.email === enteredEmail || user.phone === enteredPhone) {
+                        contactExists = true;
+                        break;
+                    }
+                } catch (e) { continue; }
+            }
 
-        if (!contactExists) {
+        if (contactExists) {
             alert("Registration failed: Email or Phone number already exists");
             return;
         }
