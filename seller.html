@@ -22,7 +22,8 @@
       <li><a href="frontpage.html">Home</a></li>
       <li><a href="buyer.html">Buy Cars</a></li>
       <li><a href="seller.html">Sell My Car</a></li>
-      <li><a href="index.html" class="logout-link">Logout</a></li>    </ul>
+      <li><a href="index.html" class="logout-link">Logout</a></li>    
+      <span id="userDisplayName" style="color: #1D2951; font-weight: 600; font-size: 0.9rem;"></span>
   </nav>
 </header>
 
@@ -260,21 +261,21 @@
       <div class="form-group">
           <label>Year</label>
           <select id="carYear" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
-              <option value="" disabled selected>Select Year</option>
+              <option value="" disabled selected required>Select Year</option>
           </select>
       </div>
 
       <div class="form-group">
           <label>Model</label>
           <select id="carModel" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
-              <option value="" disabled selected>Select Model</option>
+              <option value="" disabled selected required>Select Model</option>
           </select>
       </div>
 
       <div class="form-group">
           <label>Transmission</label>
           <select id="carTransmission" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
-              <option value="" disabled selected>Select Transmission</option>
+              <option value="" disabled selected required>Select Transmission</option>
               <option value="Automatic">Automatic</option>
               <option value="Manual">Manual</option>
               <option value="CVT">CVT</option>
