@@ -472,6 +472,36 @@
             font-size: 0.8rem;
             opacity: 0.5;
         }
+        
+        #reviewModal .modal-content {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 30px; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .review-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+        .review-stars {
+            color: #ffc107;
+            margin-bottom: 10px;
+        }
+        .review-user {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -515,6 +545,31 @@
             </button>
         </div>
     </div>
+    
+    <!-- REVIEW MODAL -->
+    <section class="main-content" style="margin-top: 80px; margin-bottom: 50px;">
+    <h2 class="page-title" style="text-align: left; margin-top: 150px; letter-spacing: 2px;">Customer Reviews</h2>
+    <div id="reviewsContainer" class="listing-container">
+        </div>
+</section>
+
+<div id="reviewModal" class="contact-modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-header" style="text-align: center; border: none;">Rate Your Experience</h2>
+        <div class="modal-body">
+            <div id="starRating" style="font-size: 2.5rem; color: #ffc107; cursor: pointer; margin-bottom: 20px; text-align: center;">
+                <i class="far fa-star" data-value="1"></i>
+                <i class="far fa-star" data-value="2"></i>
+                <i class="far fa-star" data-value="3"></i>
+                <i class="far fa-star" data-value="4"></i>
+                <i class="far fa-star" data-value="5"></i>
+            </div>
+            <textarea id="reviewText" placeholder="How was the process of securing this vehicle?" 
+                style="width: 100%; height: 120px; border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #eee; font-family: inherit;"></textarea>
+            <button id="submitReviewBtn" class="purchase-btn" style="border-radius: 15px; margin: 0;">Submit Review</button>
+        </div>
+    </div>
+</div>
 
     <div class="footer-section">
     <footer class="footer-content">
@@ -800,12 +855,72 @@
                 const updatedApproved = carListings.filter(car => car.status === 'approved');
                 localStorage.setItem('approvedCars', JSON.stringify(updatedApproved));
 
-                alert(`Success! You have secured the ${carToSecure.brand}. The seller will contact you soon.`);
-                location.reload();
+                buyerConfirmModal.style.display = 'none';
+                document.getElementById('reviewModal').classList.add('open');
             }
         });
 
         closeBuyerConfirm.onclick = () => buyerConfirmModal.style.display = 'none';
+        let selectedRating = 0;
+        const starRatingDiv = document.getElementById('starRating');
+
+        starRatingDiv.addEventListener('click', (e) => {
+            if (e.target.dataset.value) {
+                selectedRating = parseInt(e.target.dataset.value);
+                const stars = starRatingDiv.querySelectorAll('i');
+                stars.forEach(s => {
+                    if (parseInt(s.dataset.value) <= selectedRating) {
+                        s.classList.replace('far', 'fas'); 
+                    } else {
+                        s.classList.replace('fas', 'far'); 
+                    }
+                });
+            }
+        });
+
+        document.getElementById('submitReviewBtn').onclick = () => {
+            const text = document.getElementById('reviewText').value;
+            if (selectedRating === 0) return alert("Please select a star rating.");
+
+            const newReview = {
+                user: sessionStorage.getItem('activeUser'),
+                rating: selectedRating,
+                comment: text || "Great process!",
+                date: new Date().toLocaleDateString()
+            };
+
+            const reviews = JSON.parse(localStorage.getItem('carReviews') || '[]');
+            reviews.unshift(newReview); 
+            localStorage.setItem('carReviews', JSON.stringify(reviews));
+
+            alert("Thank you for your review!");
+            location.reload(); 
+        };
+
+        function displayReviews() {
+            const reviews = JSON.parse(localStorage.getItem('carReviews') || '[]');
+            const container = document.getElementById('reviewsContainer');
+            
+            if (reviews.length === 0) {
+                container.innerHTML = '<p class="empty-msg" style="text-align: center; width: 100%;">No reviews yet. Be the first to share your experience!</p>';
+                return;
+            }
+
+            container.innerHTML = reviews.map(r => `
+                <div class="review-card">
+                    <div style="color: #ffc107; margin-bottom: 10px;">
+                        ${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}
+                    </div>
+                    <p style="font-style: italic; margin-bottom: 15px;">"${r.comment}"</p>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
+                        <span><strong>${r.user}</strong></span>
+                        <span>${r.date}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        displayReviews();
 </script>
 </body>
 </html>
