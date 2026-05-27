@@ -174,11 +174,21 @@
             email: enteredEmail,
             phone: enteredPhone,
             firstName: document.getElementById('fname').value, 
-            lastName: document.getElementById('lname').value
+            lastName: document.getElementById('lname').value,
+
+            // Verification + ratings system
+            verified: enteredEmail.includes('@'),
+            rating: 0,
+            totalRatings: 0,
+            reviews: []
         };
 
         localStorage.setItem(newUsername, JSON.stringify(userData));
-        alert("Account created successfully!");
+        alert(
+            userData.verified
+            ? "Account created successfully! Account VERIFIED."
+            : "Account created successfully! Account UNVERIFIED."
+        );
         window.location.href = 'index.html';
     });
     

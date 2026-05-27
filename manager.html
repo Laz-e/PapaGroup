@@ -261,7 +261,26 @@
             color: #5e616e;
             font-weight: 600;
         }
-    </style>
+    
+.verified-badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.verified{
+    background:#d4edda;
+    color:#155724;
+}
+
+.unverified{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+</style>
 </head> 
 <body>
     <header class="header">
@@ -546,6 +565,21 @@ window.onload = function() {
                 location.reload();
             }
         }
+
+function getVerificationBadge(username) {
+    try {
+        const user = JSON.parse(localStorage.getItem(username) || '{}');
+
+        if (user.verified) {
+            return '<span class="verified-badge verified">VERIFIED</span>';
+        }
+
+        return '<span class="verified-badge unverified">UNVERIFIED</span>';
+    } catch(e) {
+        return '<span class="verified-badge unverified">UNVERIFIED</span>';
+    }
+}
+
 </script>
 </body>
 </html>   

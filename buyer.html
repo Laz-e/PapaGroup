@@ -502,7 +502,39 @@
             font-weight: bold;
             font-size: 0.9rem;
         }
-    </style>
+    
+.verified-badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+    margin-left:8px;
+}
+
+.verified{
+    background:#d4edda;
+    color:#155724;
+}
+
+.unverified{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+.seller-rating-box{
+    margin-top:10px;
+    background:#f5f5f5;
+    padding:10px;
+    border-radius:10px;
+}
+
+.seller-stars{
+    color:gold;
+    font-size:16px;
+}
+
+</style>
 </head>
 <body>
     <header class="header">
@@ -692,7 +724,34 @@
 
             document.getElementById('contactModalBody').innerHTML = `
                 <div class="seller-info-box">
-                    <p><strong>Name:</strong> ${car.seller || 'N/A'}</p>
+                    ${(() => {
+                    const sellerInfo = JSON.parse(localStorage.getItem(car.sellerUsername || car.seller) || '{}');
+
+                    const verifiedTag = sellerInfo.verified
+                        ? '<span class="verified-badge verified">VERIFIED</span>'
+                        : '<span class="verified-badge unverified">UNVERIFIED</span>';
+
+                    const sellerRating = Number(sellerInfo.rating || 0);
+                    const totalRatings = Number(sellerInfo.totalRatings || 0);
+
+                    return `
+                        <p>
+                            <strong>Name:</strong>
+                            ${car.seller || 'N/A'}
+                            ${verifiedTag}
+                        </p>
+
+                        <div class="seller-rating-box">
+                            <div class="seller-stars">
+                                ${'★'.repeat(Math.round(sellerRating))}${'☆'.repeat(5 - Math.round(sellerRating))}
+                            </div>
+
+                            <small>
+                                ${sellerRating.toFixed(1)} / 5 (${totalRatings} ratings)
+                            </small>
+                        </div>
+                    `;
+                })()}
                     <p style="margin-top: 10px;"><strong>Contact Methods:</strong></p>
                     
                     <div style="margin-top: 10px; height: 1px; background: #ddd; "></div>
@@ -892,6 +951,40 @@
             const reviews = JSON.parse(localStorage.getItem('carReviews') || '[]');
             reviews.unshift(newReview); 
             localStorage.setItem('carReviews', JSON.stringify(reviews));
+
+            // Update seller rating
+            try {
+                const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
+                const securedCar = approvedCars[currentCarIndex] || carToSecure;
+
+                if (securedCar && securedCar.sellerUsername) {
+                    const sellerData = JSON.parse(localStorage.getItem(securedCar.sellerUsername) || '{}');
+
+                    const currentTotal = Number(sellerData.totalRatings || 0);
+                    const currentRating = Number(sellerData.rating || 0);
+
+                    const updatedAverage = (
+                        (currentRating * currentTotal) + selectedRating
+                    ) / (currentTotal + 1);
+
+                    sellerData.rating = updatedAverage;
+                    sellerData.totalRatings = currentTotal + 1;
+
+                    if (!sellerData.reviews) {
+                        sellerData.reviews = [];
+                    }
+
+                    sellerData.reviews.unshift(newReview);
+
+                    localStorage.setItem(
+                        securedCar.sellerUsername,
+                        JSON.stringify(sellerData)
+                    );
+                }
+            } catch(err) {
+                console.log(err);
+            }
+
 
             alert("Thank you for your review!");
             location.reload(); 
