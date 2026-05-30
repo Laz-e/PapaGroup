@@ -95,7 +95,7 @@
     </div>
 
     <div class="login-container">   
-        <form id="registerForm">
+        <form id="registerForm" method="POST" action="register.php">
         <h2>Create your Account</h2>
         
             <div class="first-input input-field-group">
@@ -134,71 +134,15 @@
     </div>
 
     <script>
-    const registerForm = document.getElementById('registerForm');
     const passwordInput = document.getElementById('password');
-    const usernameInput = document.getElementById('username');
+    const togglePassword = document.getElementById('togglePassword');
 
-    togglePassword.textContent = '👁️'; 
+    togglePassword.textContent = '👁️';
     togglePassword.addEventListener('click', function () {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
         this.textContent = type === 'password' ? '👁️' : '🙈';
     });
-
-    registerForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const newUsername = usernameInput.value.trim();
-        const enteredEmail = document.getElementById('email').value.trim().toLowerCase();
-        const enteredPhone = document.getElementById('phone').value.trim();
-
-        if (localStorage.getItem(newUsername)) {
-            alert("Username already taken.");
-            return;
-        }
-
-        const listings = JSON.parse(localStorage.getItem('carListings') || '[]');
-        let contactExists = false;
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                try {
-                    const user = JSON.parse(localStorage.getItem(key));
-                    if (user.email === enteredEmail || user.phone === enteredPhone) {
-                        contactExists = true;
-                        break;
-                    }
-                } catch (e) { continue; }
-            }
-
-        if (contactExists) {
-            alert("Registration failed: Email or Phone number already exists");
-            return;
-        }
-
-        const userData = {
-            username: newUsername,
-            password: passwordInput.value,
-            email: enteredEmail,
-            phone: enteredPhone,
-            firstName: document.getElementById('fname').value, 
-            lastName: document.getElementById('lname').value,
-
-            // Verification + ratings system
-            verified: enteredEmail.includes('@'),
-            rating: 0,
-            totalRatings: 0,
-            reviews: []
-        };
-
-        localStorage.setItem(newUsername, JSON.stringify(userData));
-        alert(
-            userData.verified
-            ? "Account created successfully! Account VERIFIED."
-            : "Account created successfully! Account UNVERIFIED."
-        );
-        window.location.href = 'index.html';
-    });
-    
-</script>
+    </script>
 </body>
 </html>

@@ -55,13 +55,13 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
-            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .header h2 a {
             background: inherit;
-            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             font-family: 'Georgia', 'Times New Roman', serif;
         }
@@ -303,6 +303,29 @@
     
     <div class="management-section" style="margin-top: 50px;">
         <div class="table-header">
+            <h2>Registered Users</h2>
+        </div>
+        <div class="table-container">
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Verified</th>
+                    </tr>
+                </thead>
+                <tbody id="userList">
+                    <tr><td colspan="6" style="text-align:center;">Loading users...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="management-section" style="margin-top: 50px;">
+        <div class="table-header">
             <h2>Registered Sellers</h2>
         </div>
         <div class="table-container">
@@ -361,6 +384,41 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userRole !== 'manager') {
         window.location.href = 'index.html'; 
         return;
+    }
+
+    loadUsers();
+
+    async function loadUsers() {
+        const userListBody = document.getElementById('userList');
+
+        try {
+            const response = await fetch('get_users.php');
+            if (!response.ok) {
+                throw new Error('Unable to load users');
+            }
+
+            const users = await response.json();
+            if (!Array.isArray(users) || users.length === 0) {
+                userListBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No registered users found.</td></tr>';
+                return;
+            }
+
+            userListBody.innerHTML = users.map(user => {
+                const verifiedBadge = user.verified ? '<span class="verified-badge verified">VERIFIED</span>' : '<span class="verified-badge unverified">UNVERIFIED</span>';
+                return `
+                    <tr>
+                        <td>${user.first_name} ${user.last_name}</td>
+                        <td>@${user.username}</td>
+                        <td>${user.email}</td>
+                        <td>${user.phone}</td>
+                        <td>${user.role}</td>
+                        <td>${verifiedBadge}</td>
+                    </tr>
+                `;
+            }).join('');
+        } catch (error) {
+            userListBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Unable to load registered users.</td></tr>';
+        }
     }
 
     //  LOGOUT 
