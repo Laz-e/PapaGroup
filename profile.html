@@ -432,6 +432,24 @@
 <div class="profile-card"><h2>Previously Sold Cars</h2><div id="sold"></div></div>
 </div>
 <script>
+
+const userRole = sessionStorage.getItem('userRole');
+
+(function() {
+            const activeUser = sessionStorage.getItem('activeUser');
+            if (!activeUser) {
+                alert("Access Denied. Please log in first.");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            if (userRole === 'guest') {
+                alert('Guests cannot view this page. Please sign in to continue.');
+                window.location.href = 'index.html';
+                return;
+            }
+        })();
+
 function renderForm(u){
 document.getElementById('userinfo').innerHTML=`
 <p><label>Username</label><br><input id="username" value="${u.username||''}"></p>
@@ -455,5 +473,6 @@ fetch('api/profile.php').then(r=>r.json()).then(data=>{
  document.getElementById('bought').innerHTML=(data.bought||[]).map(x=>`<div>${x.brand||''} ${x.model||''} (${x.year||''}) - $${x.purchase_price||''}</div>`).join('')||'No purchases found';
  document.getElementById('sold').innerHTML=(data.sold||[]).map(x=>`<div>${x.brand||''} ${x.model||''} (${x.year||''}) - $${x.purchase_price||''}</div>`).join('')||'No sales found';
 }).catch(()=>{});
+
 </script>
 </body></html>
