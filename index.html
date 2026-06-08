@@ -52,7 +52,7 @@
            <div class="register" id="register-link">
                 <p>Don't have an account? <a href="register.html">Register here</a></p>
                 <p style="text-align: center;">or</p>
-                <p>Enter as <a href="frontpage.html">Guest</a></p>
+                <p>Enter as <a href="buyer.html">Guest</a></p>
             </div>
         </form>
     </div>
@@ -63,14 +63,11 @@
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const togglePassword = document.getElementById('togglePassword');
-    const guestLink = document.querySelector('a[href="frontpage.html"]');
 
-    togglePassword.textContent = '👁️';
-    togglePassword.addEventListener('click', function () {
+     const guestLink = document.querySelector('a[href="buyer.html"]');
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
         this.textContent = type === 'password' ? '👁️' : '🙈';
-    });
 
     guestLink.addEventListener('click', function() {
         sessionStorage.setItem('userRole', 'guest');

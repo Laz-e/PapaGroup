@@ -651,52 +651,22 @@
 
     <script>
         let currentCarIndex = null;
+        let allCars = [];
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const activeUser = sessionStorage.getItem('activeUser');
-
-            if (!activeUser) {
-                window.location.href = 'index.html'; 
-                return;
-            }
-            
+        function renderCarListings() {
             const container = document.getElementById('buyerListingContainer');
-            const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
-            const userRole = sessionStorage.getItem('userRole');
-            const logoutLink = document.querySelector('.logout-link');
-            const buyerConfirmModal = document.getElementById('buyerConfirmModal');
-            const buyerConfirmForm = document.getElementById('buyerConfirmForm');
-            const closeBuyerConfirm = document.querySelector('.close-buyer-confirm');
-            let carToSecure = null;
 
-            if (userRole === 'guest') {
-                logoutLink.textContent = 'Sign In';
-                logoutLink.href = 'index.html'; 
-                logoutLink.style.opacity = '1'; 
-                logoutLink.style.pointerEvents = 'auto'; 
-                logoutLink.title = "Click to Sign In";
-            }
-
-            logoutLink.addEventListener('click', function(e) {
-                if (userRole !== 'guest') {
-                    e.preventDefault(); 
-                    sessionStorage.removeItem('userRole');
-                    sessionStorage.removeItem('activeUser');
-                    window.location.href = 'index.html';
-                }
-            });
-                
-            if (approvedCars.length === 0) {
+            if (!allCars || allCars.length === 0) {
                 container.innerHTML = `<p class="empty-msg">No cars available for sale right now.</p>`;
                 return;
             }
 
-            container.innerHTML = approvedCars.map((car, index) => {
-                const isOwner = car.seller === sessionStorage.getItem('activeUser');
+            container.innerHTML = allCars.map((car, index) => {
+                const isOwner = car.username === sessionStorage.getItem('activeUser');
 
                 return `
                     <div class="listing-card">
-                        ${car.image ? `<img src="${car.image}" class="listing-img">` : ''}
+                        ${car.image_path ? `<img src="${car.image_path}" class="listing-img" alt="${car.brand} ${car.model}">` : ''}
                         <h3 class="listing-title">${car.year} ${car.brand} ${car.model}</h3>
                         <p class="listing-price">₱${Number(car.price).toLocaleString()}</p>
                         
@@ -717,42 +687,97 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        function removeCarFromListings(carId) {
+            allCars = allCars.filter(car => car.id !== carId);
+            renderCarListings();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userRole = sessionStorage.getItem('userRole');
+            let activeUser = sessionStorage.getItem('activeUser');
+
+            if (!activeUser && userRole === 'guest') {
+                activeUser = 'Guest';
+                sessionStorage.setItem('activeUser', 'Guest');
+            }
+
+            if (!activeUser) {
+                window.location.href = 'index.html'; 
+                return;
+            }
+            
+            const container = document.getElementById('buyerListingContainer');
+            const logoutLink = document.querySelector('.logout-link');
+
+            if (userRole === 'guest') {
+                logoutLink.textContent = 'Sign In';
+                logoutLink.href = 'index.html'; 
+                logoutLink.style.opacity = '1'; 
+                logoutLink.style.pointerEvents = 'auto'; 
+                logoutLink.title = "Click to Sign In";
+
+                container.innerHTML = `<p class="empty-msg">Please sign in to view available car listings.</p>`;
+                return;
+            }
+
+            logoutLink.addEventListener('click', function(e) {
+                sessionStorage.removeItem('userRole');
+                sessionStorage.removeItem('activeUser');
+
+                if (userRole !== 'guest') {
+                    e.preventDefault(); 
+                    window.location.href = 'logout.php';
+                }
+            });
+
+            // Fetch approved cars from API
+            fetch('api/cars.php?action=getApproved')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success || !data.cars || data.cars.length === 0) {
+                        container.innerHTML = `<p class="empty-msg">No cars available for sale right now.</p>`;
+                        return;
+                    }
+
+                    allCars = data.cars;
+                    renderCarListings();
+                })
+                .catch(error => {
+                    console.error('Error fetching cars:', error);
+                    container.innerHTML = `<p class="empty-msg">Error loading cars. Please refresh the page.</p>`;
+                });
         });
 
         function openContactModal(index) {
-            const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
-            const car = approvedCars[index];
+            const car = allCars[index];
 
             document.getElementById('contactModalBody').innerHTML = `
                 <div class="seller-info-box">
                     ${(() => {
-                    const sellerInfo = JSON.parse(localStorage.getItem(car.sellerUsername || car.seller) || '{}');
+                        const verified = car.verified ? '<span class="verified-badge verified">VERIFIED</span>' : '';
+                        const sellerRating = Number(car.rating || 0);
+                        const totalRatings = Number(car.total_ratings || 0);
 
-                    const verifiedTag = sellerInfo.verified
-                        ? '<span class="verified-badge verified">VERIFIED</span>'
-                        : '<span class="verified-badge unverified">UNVERIFIED</span>';
+                        return `
+                            <p>
+                                <strong>Name:</strong>
+                                ${car.first_name} ${car.last_name}
+                                ${verified}
+                            </p>
 
-                    const sellerRating = Number(sellerInfo.rating || 0);
-                    const totalRatings = Number(sellerInfo.totalRatings || 0);
+                            <div class="seller-rating-box">
+                                <div class="seller-stars">
+                                    ${'★'.repeat(Math.round(sellerRating))}${'☆'.repeat(5 - Math.round(sellerRating))}
+                                </div>
 
-                    return `
-                        <p>
-                            <strong>Name:</strong>
-                            ${car.seller || 'N/A'}
-                            ${verifiedTag}
-                        </p>
-
-                        <div class="seller-rating-box">
-                            <div class="seller-stars">
-                                ${'★'.repeat(Math.round(sellerRating))}${'☆'.repeat(5 - Math.round(sellerRating))}
+                                <small>
+                                    ${sellerRating.toFixed(1)} / 5 (${totalRatings} ratings)
+                                </small>
                             </div>
-
-                            <small>
-                                ${sellerRating.toFixed(1)} / 5 (${totalRatings} ratings)
-                            </small>
-                        </div>
-                    `;
-                })()}
+                        `;
+                    })()}
                     <p style="margin-top: 10px;"><strong>Contact Methods:</strong></p>
                     
                     <div style="margin-top: 10px; height: 1px; background: #ddd; "></div>
@@ -774,17 +799,14 @@
         function closeContactModal() {
             document.getElementById('contactModal').classList.remove('open');
         }
-        // ============================================
-        // VEHICLE DETAILS MODAL FUNCTIONS
-        // ============================================
+
         function openVehicleModal(index) {
-            const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
-            const car = approvedCars[index];
+            const car = allCars[index];
             currentCarIndex = index;
             const userRole = sessionStorage.getItem('userRole');
 
             document.getElementById('vehicleModalBody').innerHTML = `
-                ${car.image ? `<img src="${car.image}" alt="Vehicle Image">` : ''}
+                ${car.image_path ? `<img src="${car.image_path}" alt="Vehicle Image">` : ''}
                 
                 <div class="specs-grid">
                     <div class="spec-item">
@@ -813,16 +835,16 @@
                     </div>
                 </div>
 
-                <div style=" padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <div style="padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="margin: 0; color: black;"><strong>Price:</strong> ₱${Number(car.price).toLocaleString()}</p>
                 </div>
             `;
             const purchaseBtn = document.querySelector('.purchase-btn');
-                if (userRole === 'guest' || !userRole) {
-                    purchaseBtn.style.display = 'none';
-                } else {
-                    purchaseBtn.style.display = 'block';
-                }
+            if (userRole === 'guest' || !userRole) {
+                purchaseBtn.style.display = 'none';
+            } else {
+                purchaseBtn.style.display = 'block';
+            }
 
             document.getElementById('vehicleModal').classList.add('open');
         }
@@ -830,8 +852,6 @@
         function closeVehicleModal() {
             document.getElementById('vehicleModal').classList.remove('open');
         }
-
-        
 
         window.addEventListener('click', (e) => {
             const contactModal = document.getElementById('contactModal');
@@ -843,44 +863,37 @@
             if (e.target === vehicleModal) {
                 closeVehicleModal();
             }
-
         });
 
         const buyerConfirmModal = document.getElementById('buyerConfirmModal');
         const buyerConfirmForm = document.getElementById('buyerConfirmForm');
         const closeBuyerConfirm = document.querySelector('.close-buyer-confirm');
-        let carToSecure = null; // Temporary storage para sa napiling sasakyan
+        let carToSecure = null;
 
-            function secureCar() {
-                const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
-                const activeUser = sessionStorage.getItem('activeUser');
+        function secureCar() {
+            const activeUser = sessionStorage.getItem('activeUser');
+            const car = allCars[currentCarIndex];
 
-                if (activeUser === 'Guest') {
-                        alert("Please log in to secure a vehicle.");
-                        return;
-                }
+            if (activeUser === 'Guest') {
+                alert("Please log in to secure a vehicle.");
+                return;
+            }
 
-                carToSecure = approvedCars[currentCarIndex];
-                const currentLoggedInUser = activeUser.trim().toLowerCase();
-                const carOwner = (carToSecure.sellerUsername || "").trim().toLowerCase();
+            if (activeUser === car.username) {
+                alert("Action Denied: You cannot purchase a vehicle that you posted yourself.");
+                closeVehicleModal();
+                return;
+            }
 
-                if (currentLoggedInUser === carOwner) {
-                    alert("Action Denied: You cannot purchase a vehicle that you posted yourself.");
-                    closeVehicleModal(); // Close the info modal
-                    return;
-                }
+            carToSecure = car;
 
-                document.getElementById('buyerVehicleSummary').innerHTML = `
-                    <strong>Vehicle:</strong> ${carToSecure.brand} ${carToSecure.model} (${carToSecure.year})<br>
-                    <strong>Price:</strong> ₱${Number(carToSecure.price).toLocaleString()}
-                `;
+            document.getElementById('buyerVehicleSummary').innerHTML = `
+                <strong>Vehicle:</strong> ${car.brand} ${car.model} (${car.year})<br>
+                <strong>Price:</strong> ₱${Number(car.price).toLocaleString()}
+            `;
 
-                const userData = JSON.parse(localStorage.getItem(activeUser) || '{}');
-               const firstName = userData.firstName || "";
-                const lastName = userData.lastName || "";
-                const fullName = (firstName + " " + lastName).trim();
-                document.getElementById('buyerFullName').value = fullName || activeUser; 
-                document.getElementById('buyerPhone').value = userData.phone || "";
+            document.getElementById('buyerFullName').value = ''; 
+            document.getElementById('buyerPhone').value = '';
 
             closeVehicleModal();
             buyerConfirmModal.style.display = 'flex';
@@ -891,36 +904,41 @@
 
             const buyerName = document.getElementById('buyerFullName').value;
             const buyerPhone = document.getElementById('buyerPhone').value;
-            const activeUsername = sessionStorage.getItem('activeUser'); 
 
-            let carListings = JSON.parse(localStorage.getItem('carListings') || '[]');
-
-            const masterIndex = carListings.findIndex(car =>
-                car.brand === carToSecure.brand &&
-                car.model === carToSecure.model &&
-                car.price === carToSecure.price &&
-                car.sellerUsername === carToSecure.sellerUsername
-            );
-
-            if (masterIndex !== -1) {
-                carListings[masterIndex].status = 'SECURED';
-                carListings[masterIndex].securedBy = activeUsername;
-                carListings[masterIndex].buyerName = buyerName;
-                carListings[masterIndex].buyerPhone = buyerPhone;
-                carListings[masterIndex].sellerUsername = carToSecure.sellerUsername; 
-                carListings[masterIndex].securedAt = new Date().toLocaleString();
-        
-                localStorage.setItem('carListings', JSON.stringify(carListings));
-
-                const updatedApproved = carListings.filter(car => car.status === 'approved');
-                localStorage.setItem('approvedCars', JSON.stringify(updatedApproved));
-
-                buyerConfirmModal.style.display = 'none';
-                document.getElementById('reviewModal').classList.add('open');
+            if (!buyerName || !buyerPhone) {
+                alert('Please fill in all fields.');
+                return;
             }
+
+            const formData = new FormData();
+            formData.append('car_id', carToSecure.id);
+            formData.append('purchase_price', carToSecure.price);
+            formData.append('notes', `Buyer: ${buyerName}, Phone: ${buyerPhone}`);
+
+            fetch('api/transactions.php?action=create', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    buyerConfirmModal.style.display = 'none';
+                    if (carToSecure) {
+                        removeCarFromListings(carToSecure.id);
+                    }
+                    document.getElementById('reviewModal').classList.add('open');
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to create transaction'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error creating transaction');
+            });
         });
 
         closeBuyerConfirm.onclick = () => buyerConfirmModal.style.display = 'none';
+
         let selectedRating = 0;
         const starRatingDiv = document.getElementById('starRating');
 
@@ -942,76 +960,58 @@
             const text = document.getElementById('reviewText').value;
             if (selectedRating === 0) return alert("Please select a star rating.");
 
-            const newReview = {
-                user: sessionStorage.getItem('activeUser'),
-                rating: selectedRating,
-                comment: text || "Great process!",
-                date: new Date().toLocaleDateString()
-            };
+            const formData = new FormData();
+            formData.append('car_id', carToSecure.id);
+            formData.append('rating', selectedRating);
+            formData.append('comment', text || "Great experience!");
 
-            const reviews = JSON.parse(localStorage.getItem('carReviews') || '[]');
-            reviews.unshift(newReview); 
-            localStorage.setItem('carReviews', JSON.stringify(reviews));
-
-            // Update seller rating
-            try {
-                const approvedCars = JSON.parse(localStorage.getItem('approvedCars') || '[]');
-                const securedCar = approvedCars[currentCarIndex] || carToSecure;
-
-                if (securedCar && securedCar.sellerUsername) {
-                    const sellerData = JSON.parse(localStorage.getItem(securedCar.sellerUsername) || '{}');
-
-                    const currentTotal = Number(sellerData.totalRatings || 0);
-                    const currentRating = Number(sellerData.rating || 0);
-
-                    const updatedAverage = (
-                        (currentRating * currentTotal) + selectedRating
-                    ) / (currentTotal + 1);
-
-                    sellerData.rating = updatedAverage;
-                    sellerData.totalRatings = currentTotal + 1;
-
-                    if (!sellerData.reviews) {
-                        sellerData.reviews = [];
-                    }
-
-                    sellerData.reviews.unshift(newReview);
-
-                    localStorage.setItem(
-                        securedCar.sellerUsername,
-                        JSON.stringify(sellerData)
-                    );
+            fetch('api/reviews.php?action=add', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Thank you for your review!");
+                    location.reload(); 
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to submit review'));
                 }
-            } catch(err) {
-                console.log(err);
-            }
-
-
-            alert("Thank you for your review!");
-            location.reload(); 
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error submitting review');
+            });
         };
 
         function displayReviews() {
-            const reviews = JSON.parse(localStorage.getItem('carReviews') || '[]');
-            const container = document.getElementById('reviewsContainer');
-            
-            if (reviews.length === 0) {
-                container.innerHTML = '<p class="empty-msg" style="text-align: center; width: 100%;">No reviews yet. Be the first to share your experience!</p>';
-                return;
-            }
+            fetch('api/reviews.php?action=getAll')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('reviewsContainer');
+                    
+                    if (!data.success || !data.reviews || data.reviews.length === 0) {
+                        container.innerHTML = '<p class="empty-msg" style="text-align: center; width: 100%;">No reviews yet. Be the first to share your experience!</p>';
+                        return;
+                    }
 
-            container.innerHTML = reviews.map(r => `
-                <div class="review-card">
-                    <div style="color: #ffc107; margin-bottom: 10px;">
-                        ${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}
-                    </div>
-                    <p style="font-style: italic; margin-bottom: 15px;">"${r.comment}"</p>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
-                        <span><strong>${r.user}</strong></span>
-                        <span>${r.date}</span>
-                    </div>
-                </div>
-            `).join('');
+                    container.innerHTML = data.reviews.map(r => `
+                        <div class="review-card">
+                            <div style="color: #ffc107; margin-bottom: 10px;">
+                                ${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}
+                            </div>
+                            <p style="font-style: italic; margin-bottom: 15px;">"${r.comment}"</p>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
+                                <span><strong>${r.first_name} ${r.last_name}</strong></span>
+                                <span>${new Date(r.created_at).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => {
+                    console.error('Error fetching reviews:', error);
+                    document.getElementById('reviewsContainer').innerHTML = '<p class="empty-msg">Error loading reviews.</p>';
+                });
         }
 
         displayReviews();

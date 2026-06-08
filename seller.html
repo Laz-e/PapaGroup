@@ -26,6 +26,168 @@
     background:#f8d7da;
     color:#721c24;
 }
+
+.seller-listings {
+    padding: 80px 20px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, rgba(29, 41, 81, 0.03) 0%, rgba(46, 204, 113, 0.03) 100%);
+    border-radius: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.seller-listings h2 {
+    font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 1.03;
+    margin: 0 0 10px;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    text-align: center;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.seller-listings h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+    border-radius: 2px;
+}
+
+.status-tag {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-top: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    transform: translateY(0);
+    border: none;
+}
+
+.status-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.status-sold {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+}
+
+.status-sold:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+}
+
+.status-approved {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+}
+
+.status-approved:hover {
+    background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+}
+
+.status-secured {
+    background: linear-gradient(135deg, #22c1c3 0%, #1e90ff 100%);
+    color: white;
+}
+
+.status-unapproved {
+    background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+    color: #1D2951;
+    font-weight: 800;
+}
+
+.status-unapproved:hover {
+    background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+}
+
+.status-pending {
+    background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+    color: #1D2951;
+    font-weight: 800;
+}
+
+.status-pending:hover {
+    background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+}
+
+.status-rejected {
+    background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    color: white;
+}
+
+.status-rejected:hover {
+    background: linear-gradient(135deg, #7f8c8d 0%, #616770 100%);
+}
+
+.listing-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.listing-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 20px;
+    padding: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.listing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+}
+
+.listing-img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border: none;
+}
+
+.listing-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1D2951;
+    margin: 8px 0;
+}
+
+.listing-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2ecc71;
+    margin: 8px 0;
+}
+
+.empty-msg {
+    text-align: center;
+    color: #95a5a6;
+    font-size: 1rem;
+    padding: 40px 20px;
+}
 </style>
 </head>
 <body>
@@ -244,6 +406,11 @@
     </div>
   </main>
 
+  <section class="seller-listings">
+    <h2>Your Car Listings</h2>
+    <div id="sellerListingsContainer" class="listing-container"></div>
+  </section>
+
   <div class="footer-section">
   <footer class="footer-content">
     <p>Connect with the <strong>CarVault</strong> team for personalized assistance.</p>
@@ -406,6 +573,13 @@
             if (!activeUser) {
                 alert("Access Denied. Please log in first.");
                 window.location.href = 'index.html';
+                return;
+            }
+
+            if (userRole === 'guest') {
+                alert('Guests cannot view seller account listings. Please sign in to continue.');
+                window.location.href = 'index.html';
+                return;
             }
         })();
 
@@ -419,13 +593,91 @@
         }
 
         logoutLink.addEventListener('click', function(e) {
+            sessionStorage.removeItem('userRole');
+            sessionStorage.removeItem('activeUser');
+
             if (userRole !== 'guest') {
                 e.preventDefault();
-                sessionStorage.removeItem('userRole');
-                sessionStorage.removeItem('activeUser');
                 window.location.href = 'index.html';
             }
         });
+
+        function getStatusClass(status) {
+            if (status === 'sold') return 'status-secured';
+            if (status === 'approved') return 'status-approved';
+            if (status === 'pending') return 'status-unapproved';
+            return 'status-rejected';
+        }
+
+        function getStatusLabel(status) {
+            if (status === 'pending') return 'UNAPPROVED';
+            if (status === 'approved') return 'APPROVED';
+            if (status === 'sold') return 'SECURED';
+            if (status === 'rejected') return 'REJECTED';
+            return status.toUpperCase();
+        }
+
+        function renderSellerListings(cars, transactionsMap = {}) {
+            const container = document.getElementById('sellerListingsContainer');
+            if (!container) return;
+
+            if (!cars || cars.length === 0) {
+                container.innerHTML = '<p class="empty-msg" style="text-align:center; width:100%;">No listings found yet.</p>';
+                return;
+            }
+
+            container.innerHTML = cars.map(car => {
+                const buyerTx = transactionsMap[car.id];
+                const securedInfo = buyerTx ? `
+                    <div class="secured-info" style="margin-top: 14px; padding: 12px; background: rgba(46, 204, 113, 0.08); border-radius: 12px;">
+                        <strong>Secured by:</strong> ${buyerTx.first_name} ${buyerTx.last_name}<br>
+                        <strong>Phone:</strong> ${buyerTx.phone || 'N/A'}<br>
+                        <strong>Email:</strong> ${buyerTx.email || 'N/A'}
+                    </div>
+                ` : '';
+
+                return `
+                    <div class="listing-card">
+                        ${car.image_path ? `<img src="${car.image_path}" class="listing-img" alt="${car.brand} ${car.model}">` : ''}
+                        <h3 class="listing-title">${car.year} ${car.brand} ${car.model}</h3>
+                        <p class="listing-price">₱${Number(car.price).toLocaleString()}</p>
+                        <span class="status-tag ${getStatusClass(car.status)}">${getStatusLabel(car.status)}</span>
+                        <p style="margin-top: 16px;">Variant: ${car.variant || 'N/A'}</p>
+                        <p>Mileage: ${Number(car.mileage).toLocaleString()} km</p>
+                        ${securedInfo}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadSellerListings() {
+            Promise.all([
+                fetch('api/cars.php?action=getBySeller').then(res => res.json()),
+                fetch('api/transactions.php?action=getSeller').then(res => res.json())
+            ])
+            .then(([carsData, txData]) => {
+                const transactionsMap = {};
+                if (txData.success && Array.isArray(txData.transactions)) {
+                    txData.transactions.forEach(tx => {
+                        if (!transactionsMap[tx.car_id]) {
+                            transactionsMap[tx.car_id] = tx;
+                        }
+                    });
+                }
+
+                if (carsData.success && Array.isArray(carsData.cars)) {
+                    renderSellerListings(carsData.cars, transactionsMap);
+                } else {
+                    document.getElementById('sellerListingsContainer').innerHTML = '<p class="empty-msg" style="text-align:center; width:100%;">No listings found yet.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Seller listings error:', error);
+                document.getElementById('sellerListingsContainer').innerHTML = '<p class="empty-msg" style="text-align:center; width:100%;">Unable to load your listings.</p>';
+            });
+        }
+
+        loadSellerListings();
 
         function populateYearDropdown(brand) {
         yearSelect.innerHTML = '<option value="" disabled selected>Select Year</option>';
@@ -1268,86 +1520,61 @@
             e.preventDefault();
             
             const imageFile = document.getElementById('carImage').files[0];
-            const reader = new FileReader();
 
-            reader.onloadend = () => {
-                tempVehicleData = {
-                    brand: document.getElementById('displayBrand').value,
-                    year: document.getElementById('carYear').value,
-                    model: document.getElementById('carModel').value,
-                    transmission: document.getElementById('carTransmission').value,
-                    variant: document.getElementById('carVariant').value,
-                    mileage: document.getElementById('carMileage').value,
-                    price: document.getElementById('carPrice').value,
-                    image: reader.result, 
-                    status: 'pending',
-                    dateListed: new Date().toLocaleDateString()
-                };
-                const activeUsername = sessionStorage.getItem('activeUser');
-                const rawData = localStorage.getItem(activeUsername);
-                
-                if (rawData) {
-                    const userStoredData = JSON.parse(rawData);
-                    
-                    const fName = userStoredData.firstName || "";
-                    const lName = userStoredData.lastName || "";
-                    document.getElementById('sellerName').value = (fName + " " + lName).trim();
-                    
-                    document.getElementById('sellerEmail').value = userStoredData.email || "";
-                    
-                    document.getElementById('sellerPhone').value = userStoredData.phone || "";
-                }
+            if (!imageFile) {
+                alert("Please select a photo.");
+                return;
+            }
 
-                vehicleDetailsModal.classList.remove('open');
-                sellerInfoModal.classList.add('open');
+            tempVehicleData = {
+                brand: document.getElementById('displayBrand').value,
+                year: document.getElementById('carYear').value,
+                model: document.getElementById('carModel').value,
+                transmission: document.getElementById('carTransmission').value,
+                variant: document.getElementById('carVariant').value,
+                mileage: document.getElementById('carMileage').value,
+                price: document.getElementById('carPrice').value,
+                image: imageFile
             };
 
-            if (imageFile) {
-                reader.readAsDataURL(imageFile); 
-            } else {
-                alert("Please select a photo.");
-            }
+            vehicleDetailsModal.classList.remove('open');
+            sellerInfoModal.classList.add('open');
         });
 
         document.getElementById('sellerDetailsForm').addEventListener('submit', function(e) {
           e.preventDefault();
-          const activeUsername = sessionStorage.getItem('activeUser');
-          const userProfile = JSON.parse(localStorage.getItem(activeUsername) || '{}');
-          const fullName = `${userProfile.firstName || ''} ${userProfile.lastName || ''}`.trim() || activeUsername;
+          
+          const formData = new FormData();
+          formData.append('brand', tempVehicleData.brand);
+          formData.append('model', tempVehicleData.model);
+          formData.append('year', tempVehicleData.year);
+          formData.append('transmission', tempVehicleData.transmission);
+          formData.append('variant', tempVehicleData.variant);
+          formData.append('mileage', tempVehicleData.mileage);
+          formData.append('price', tempVehicleData.price);
+          formData.append('city', document.getElementById('sellerCity').value);
+          formData.append('image', tempVehicleData.image);
 
-          const allListings = JSON.parse(localStorage.getItem('carListings') || '[]');
-          const hasPriorApproval = allListings.some(car => 
-              car.sellerUsername === activeUsername.toLowerCase() && car.status === 'approved'
-          );
-
-          const finalStatus = hasPriorApproval ? 'approved' : 'pending';
-
-          const finalData = {
-              ...tempVehicleData,
-              status: finalStatus, 
-              seller: fullName.toUpperCase(),
-              sellerUsername: activeUsername.toLowerCase(), 
-              phone: document.getElementById('sellerPhone').value,
-              email: document.getElementById('sellerEmail').value,
-              city: document.getElementById('sellerCity').value
-          };
-
-          allListings.push(finalData);
-          localStorage.setItem('carListings', JSON.stringify(allListings));
-
-          if (hasPriorApproval) {
-              const approvedListings = JSON.parse(localStorage.getItem('approvedCars') || '[]');
-              approvedListings.push(finalData);
-              localStorage.setItem('approvedCars', JSON.stringify(approvedListings));
-              
-              alert("Welcome back! Your listing has been automatically approved and is now live.");
-              window.location.href = 'buyer.html';
-          } else {
-              alert("Success! Listing sent to Manager for first-time verification.");
-              this.reset();
-              document.getElementById('vehicleDetailsForm').reset();
-              sellerModal.classList.remove('open');
-          }
+          fetch('api/cars.php?action=add', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  alert("Success! Your car listing has been submitted to the manager for verification.");
+                  this.reset();
+                  document.getElementById('vehicleDetailsForm').reset();
+                  sellerInfoModal.classList.remove('open');
+                  window.location.href = 'frontpage.html';
+              } else {
+                  alert('Error: ' + (data.error || 'Failed to create listing'));
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('Error submitting listing');
+          });
       });
     });
 </script>

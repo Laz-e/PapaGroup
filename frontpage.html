@@ -437,10 +437,10 @@
 
     <div class="search-container">
     <form action="buyer.html" method="GET" class="search-box">
-        <input type="text" name="query" placeholder="Search by model, make, or year..." aria-label="Search cars">
+        <input type="text" name="query" placeholder="Click the button to search for vehicles" aria-label="Search cars">
         <button type="submit" class="search-btn">
             <i class="fas fa-search"></i>
-            Search
+            Buy Vehicles
         </button>
     </form>
     </div>
@@ -514,15 +514,12 @@
         }
 
         logoutLink.addEventListener('click', function(e) {
+                sessionStorage.removeItem('userRole');
+                sessionStorage.removeItem('activeUser');
+
                 if (userRole !== 'guest') {
                     e.preventDefault(); 
-                    
-                    // Clear session data
-                    sessionStorage.removeItem('userRole');
-                    sessionStorage.removeItem('activeUser');
-                    
-                    // Redirect back to login page
-                    window.location.href = 'index.html';
+                    window.location.href = 'logout.php';
                 }
             });
 
