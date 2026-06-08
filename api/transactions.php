@@ -41,6 +41,10 @@ try {
             handleGetTransactionById($pdo);
             break;
 
+        case 'report':
+            handleSalesReport($pdo);
+            break;
+
         default:
             http_response_code(400);
             exit(json_encode(['error' => 'Invalid action']));
@@ -318,4 +322,13 @@ function handleGetTransactionById($pdo)
         'success' => true,
         'transaction' => $transaction
     ]));
+}
+
+
+function handleSalesReport($pdo){
+    $stmt=$pdo->query("SELECT DATE_FORMAT(created_at,'%b') m, COUNT(*) sales, SUM(purchase_price) revenue FROM transactions GROUP BY MONTH(created_at) ORDER BY MONTH(created_at)");
+    $rows=$stmt->fetchAll(PDO::FETCH_ASSOC);
+    $labels=[];$sales=[];
+    foreach($rows as $r){$labels[]=$r['m'];$sales[]=(int)$r['sales'];}
+    exit(json_encode(['success'=>true,'labels'=>$labels,'sales'=>$sales]));
 }

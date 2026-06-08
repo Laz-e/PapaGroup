@@ -319,9 +319,21 @@
 <p>Monthly and yearly sales reporting section.</p>
 <canvas id="salesChart" height="120"></canvas>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const ctx=document.getElementById('salesChart');
-if(ctx){new Chart(ctx,{type:'bar',data:{labels:['Jan','Feb','Mar'],datasets:[{label:'Sales',data:[0,0,0]}]}});}
+async function loadSalesChart(){
+ const r=await fetch('api/transactions.php?action=report');
+ const d=await r.json();
+ const ctx=document.getElementById('salesChart');
+ if(!ctx) return;
+ if(window.salesChartObj) window.salesChartObj.destroy();
+ window.salesChartObj=new Chart(ctx,{
+  type:'bar',
+  data:{labels:d.labels||[],datasets:[{label:'Sales',data:d.sales||[]}]}
+ });
+}
+loadSalesChart();
+setInterval(loadSalesChart,10000);
 </script></section></main>
     
     <div class="management-section" style="margin-top: 50px;">
