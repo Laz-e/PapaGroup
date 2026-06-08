@@ -6,6 +6,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect('register.html');
 }
 
+function showError(string $message): void
+{
+    $safeMessage = htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    echo '<script>alert("' . $safeMessage . '"); window.location.href = "register.html";</script>';
+    exit;
+}
+
 $username = strtolower(trim($_POST['username'] ?? ''));
 $email = strtolower(trim($_POST['email'] ?? ''));
 $phone = trim($_POST['phone'] ?? '');
@@ -14,15 +21,15 @@ $firstName = trim($_POST['fname'] ?? '');
 $lastName = trim($_POST['lname'] ?? '');
 
 if (!$username || !$email || !$phone || !$password || !$firstName || !$lastName) {
-    exit('<p>All fields are required. <a href="register.html">Go back</a></p>');
+    showError('All fields are required.');
 }
 
 if (!preg_match('/^[0-9]{11}$/', $phone)) {
-    exit('<p>Phone number must be 11 digits. <a href="register.html">Go back</a></p>');
+    showError('Phone number must be 11 digits.');
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    exit('<p>Invalid email address. <a href="register.html">Go back</a></p>');
+    showError('Invalid email address.');
 }
 
 $pdo = getPDO();
@@ -36,7 +43,7 @@ $stmt->execute([
 ]);
 
 if ($stmt->fetch()) {
-    exit('<p>Username, email or phone already exists. <a href="register.html">Try again</a></p>');
+    showError('Username, email, or phone already exists.');
 }
 
 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
