@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile</title>
+<style>
+
+        /*global/body style*/
+        body {
+            display: block; 
+            margin: 0;
+            padding-top: 100px; 
+            background: linear-gradient(135deg, #5e616e 0%, #736186 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /*header & nav*/
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0px 70px; 
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Branding & Logo */
+        .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+        }
+
+        .logo-link {
+            text-decoration: none; 
+            color: inherit;         
+            display: inline-block;
+        }
+
+        .header h2 {
+            margin: 0;
+            padding: 0;
+            display: inline-block;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header h2 a {
+            background: inherit;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-left: -15px; 
+        }
+
+        .logo-container img {
+            padding-top: 5px; 
+            height: 120px; 
+            width: auto;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        /* Nav Links */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .header-nav a {
+            text-decoration: none;
+            color: #1D2951;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .header-nav a:hover {
+            color: #a855f7; 
+        }
+
+        .logout-link {
+            opacity: 0.6;
+        }
+
+        /*hero section*/
+        .hero-section {
+            text-align: center;
+            color: white;
+            padding: 50px 20px;
+            animation: fadeIn 1.5s ease-in;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #FFF8DC 100%);
+            background-clip: text; 
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-section p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            margin-top: 15px; 
+            background: linear-gradient(135deg, #e2e8f0 0%, #ffffff 100%);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-section p strong {
+            color: #f06529; 
+            -webkit-text-fill-color: #9b8278; 
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /*search container*/
+        .search-container {
+            max-width: 600px;
+            max-height: 10px;
+            margin: -20px auto 120px auto; 
+            padding: 20px 20px 0 20px;
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUpFade 1s ease-out forwards;
+            animation-delay: 0.8s; 
+        }
+
+        .search-box {
+            display: flex;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 8px 10px 20px 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .search-box:focus-within {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.95); 
+            font-weight: 300;
+            -webkit-text-fill-color: white; 
+        }
+
+        .search-btn {
+            border: none;
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+            padding: 0 30px;
+            border-radius: 40px;
+            max-height: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-1px);
+            background: linear-gradient(135deg, #1D2951 0%, #64748b 100%);
+        }
+
+        .search-btn:active {
+            transform: scale(0.95);
+            filter: brightness(1.2);
+        }
+
+        .search-box:hover .search-btn i {
+            animation: iconPulse 1s infinite alternate;
+        }
+
+        /*porsche container*/
+        .porsche-container {
+            position: relative;
+            perspective: 1000px;
+            margin-top: -30px; 
+            z-index: 1; 
+        }
+
+        .porsche-container img {
+            width: 100%; 
+            max-width: 600px; 
+            display: block; 
+            margin: 1px auto;
+            transition: transform 0.5s ease, filter 0.5s ease; 
+            animation: driveIn 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            animation-delay: 0.5s;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+            height: auto
+        }
+
+        /*about us*/
+        .about-section {
+            padding: 120px 20px;
+            margin: 100px 0;
+            background: rgba(255, 255, 255, 0.08); 
+            color: white;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .about-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+            border-radius: 60px;
+        }
+
+        .about-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center; 
+            gap: 60px; 
+            text-align: left; 
+        }
+
+        .about-text {
+            flex: 1; 
+        }
+
+        .about-section h2 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            line-height: 1.1;
+            color: #ffffff;
+        }
+
+        .about-section h2 span {
+            background: linear-gradient(135deg, #e2e8f0 0%, #FFF8DC 100%);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .about-section p {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: #cbd5e1;
+            margin-bottom: 25px;
+            max-width: 500px; 
+        }
+
+        .about-visual {
+            flex: 1; 
+        }
+
+        .about-visual img {
+            width: 120%;
+            height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+            padding-right: 70px;
+        }
+
+        /*footer seciton*/
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-content p {
+            margin: 0;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            color: #cbd5e1;
+        }
+
+        .contact-icons {
+            display: flex;
+            gap: 30px;
+            margin-top: 10px;
+        }
+
+        .contact-item {
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .contact-item i {
+            font-size: 1.5rem;
+            color: #FFF8DC; 
+        }
+
+        .contact-item:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+            color: #a855f7; 
+        }
+
+        .footer-bottom {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+
+        /*media que*/
+        @media (max-width: 768px) {
+            .about-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .about-section p {
+                margin: 0 auto 25px auto;
+            }
+            .about-visual img {
+                padding-right: 0;
+                width: 100%;
+            }
+        }
+            /*animation*/ 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUpFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes iconPulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+
+        @keyframes driveIn {
+            from {
+                opacity: 0;
+                transform: translateX(-100px); 
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0); 
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+
+.profile-container{max-width:1000px;margin:40px auto;padding:20px;}
+.profile-card{background:#fff;padding:24px;border-radius:10px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+.profile-card h2{margin-top:0;}
+
+.profile-card{max-width:1100px;margin:20px auto;background:#fff;border-radius:16px;padding:30px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.form-group{display:flex;flex-direction:column}
+.form-group label{font-weight:600;margin-bottom:6px;color:#333}
+.form-group input{padding:12px;border:1px solid #ddd;border-radius:8px}
+.save-btn{background:#1D2951;color:#fff;border:none;padding:12px 20px;border-radius:8px;cursor:pointer;margin-top:20px}
+
+</style>
+</head>
+<body>
+<header class="header">
+        <div class="brand-group">
+                <h2><a href="frontpage.html" class="logo-link">CarVault</a></h2>    
+                <div class="logo-container">
+                <img src="pictures/logo.png" alt="Logo">
+            </div>
+        </div>
+
+        <nav class="header-nav">
+<a href="frontpage.html">Home</a>
+<a href="buyer.html">Buy Cars</a>
+<a href="seller.html">Sell My Car</a>
+<a href="profile.html">Profile</a>
+<a href="index.html" class="logout-link">Logout</a>
+</nav>
+    </header>
+
+
+<div class="profile-container">
+<h1>My Profile</h1>
+<div class="profile-card"><h2>Account Information</h2>
+<div id="userinfo">Loading...</div></div>
+<div class="profile-card"><h2>Previously Bought Cars</h2><div id="bought"></div></div>
+<div class="profile-card"><h2>Previously Sold Cars</h2><div id="sold"></div></div>
+</div>
+<script>
+function renderForm(u){
+document.getElementById('userinfo').innerHTML=`
+<p><label>Username</label><br><input id="username" value="${u.username||''}"></p>
+<p><label>Email</label><br><input id="email" value="${u.email||''}"></p>
+<p><label>First Name</label><br><input id="first_name" value="${u.first_name||''}"></p>
+<p><label>Last Name</label><br><input id="last_name" value="${u.last_name||''}"></p>
+<p><label>Phone</label><br><input id="phone" value="${u.phone||''}"></p>
+<button onclick="saveProfile()">Save Changes</button>
+<div id="msg"></div>`;
+}
+function saveProfile(){
+fetch('api/profile.php',{method:'PUT',headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+username:username.value,email:email.value,first_name:first_name.value,last_name:last_name.value,phone:phone.value
+})}).then(r=>r.json()).then(d=>{
+document.getElementById('msg').innerText=d.success?'Profile updated':'Update failed';
+});
+}
+fetch('api/profile.php').then(r=>r.json()).then(data=>{
+ if(data.user){renderForm(data.user);}
+ document.getElementById('bought').innerHTML=(data.bought||[]).map(x=>`<div>${x.brand||''} ${x.model||''} (${x.year||''}) - $${x.purchase_price||''}</div>`).join('')||'No purchases found';
+ document.getElementById('sold').innerHTML=(data.sold||[]).map(x=>`<div>${x.brand||''} ${x.model||''} (${x.year||''}) - $${x.purchase_price||''}</div>`).join('')||'No sales found';
+}).catch(()=>{});
+</script>
+</body></html>

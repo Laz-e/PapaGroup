@@ -292,14 +292,26 @@
         </div>
 
         <nav class="header-nav">
-            <a href="index.html" class="logout-link" id="managerLogout">Logout</a>
-        </nav>
+<a href="frontpage.html">Home</a>
+<a href="buyer.html">Buy Cars</a>
+<a href="seller.html">Sell My Car</a>
+<a href="profile.html">Profile</a>
+<a href="index.html" class="logout-link">Logout</a>
+</nav>
     </header>
 
     <main class="manager-main">
         <h1 class="page-title">Inventory Manager</h1>
         <div id="listingContainer"></div>
-    </main>
+    <section style="background:white;padding:20px;margin:20px;border-radius:12px">
+<h2>Sales Analytics</h2>
+<p>Monthly and yearly sales reporting section.</p>
+<canvas id="salesChart" height="120"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx=document.getElementById('salesChart');
+if(ctx){new Chart(ctx,{type:'bar',data:{labels:['Jan','Feb','Mar'],datasets:[{label:'Sales',data:[0,0,0]}]}});}
+</script></section></main>
     
     <div class="management-section" style="margin-top: 50px;">
         <div class="table-header">

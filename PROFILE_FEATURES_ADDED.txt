@@ -1,0 +1,3 @@
+Added api/profile.php endpoint.
+Database schema already contains users, cars, transactions, reviews.
+Further frontend integration is needed in profile.html to consume this endpoint.
